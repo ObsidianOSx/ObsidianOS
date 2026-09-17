@@ -7,6 +7,25 @@ SMS, and location is switched off and locked.
 This repository contains everything that makes the phone OBSIDIAN: the chat app, the changes
 applied to the operating system, and the module the chat server uses.
 
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><img src="docs/screenshots/home.png" width="200" alt="Home screen with Tor Browser, Obsidian Chat and Camera"><br><sub>Three apps, nothing else</sub></td>
+    <td align="center"><img src="docs/screenshots/create-account.png" width="200" alt="Creating an account with a username, password, app PIN and a PGP key made on the phone"><br><sub>Create an account</sub></td>
+    <td align="center"><img src="docs/screenshots/chats.png" width="200" alt="Chat list showing one new sealed message and the emergency wipe button"><br><sub>New messages arrive sealed</sub></td>
+    <td align="center"><img src="docs/screenshots/sealed-message.png" width="200" alt="A sealed message waiting to be opened"><br><sub>Tap to open</sub></td>
+  </tr>
+  <tr>
+    <td align="center"><img src="docs/screenshots/conversation.png" width="200" alt="A conversation, end-to-end encrypted with OMEMO over Tor"><br><sub>OMEMO, over Tor</sub></td>
+    <td align="center"><img src="docs/screenshots/security.png" width="200" alt="Security status: Tor, server connection, encryption, contacts, location and storage"><br><sub>Security status</sub></td>
+    <td align="center"><img src="docs/screenshots/identity.png" width="200" alt="Your PGP fingerprint and QR code to compare in person"><br><sub>Verify in person</sub></td>
+    <td align="center"><img src="docs/screenshots/lock.png" width="200" alt="The app's own PIN lock screen"><br><sub>App PIN lock</sub></td>
+  </tr>
+</table>
+
+<sub>Screenshots are from the emulator build.</sub>
+
 ## What's here
 
 | Folder | What it is |

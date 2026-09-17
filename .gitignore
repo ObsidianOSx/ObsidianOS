@@ -1,0 +1,28 @@
+# Internal planning notes stay private: only the README is published from the top level
+/*.md
+!/README.md
+
+# Build output and per-machine settings. local.properties holds the server address and key pin.
+build/
+.gradle/
+.kotlin/
+.idea/
+*.iml
+local.properties
+.cxx/
+.externalNativeBuild/
+captures/
+.DS_Store
+
+# Built artifacts and anything key-like never belong in the repository
+*.apk
+*.aab
+*.jks
+*.keystore
+*.pem
+*.p12
+*.pk8
+*.x509.pem
+
+# Emulator test runs: screenshots, logs and throwaway accounts
+obsidian-chat/tools/emulator-test/local/

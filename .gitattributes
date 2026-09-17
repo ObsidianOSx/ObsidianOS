@@ -1,0 +1,8 @@
+# Shell scripts must keep LF endings or they fail on Linux and Android
+*.sh      text eol=lf
+gradlew   text eol=lf
+*.lua     text eol=lf
+*.rc      text eol=lf
+*.bat     text eol=crlf
+*.png     binary
+*.jar     binary

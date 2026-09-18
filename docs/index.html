@@ -23,6 +23,7 @@
     <a href="#messaging">Messaging</a>
     <a href="#screens">Screens</a>
     <a href="#server">The server</a>
+    <a href="#transparency">Transparency</a>
     <a href="#questions">Questions</a>
     <a class="ghost" href="https://github.com/ObsidianOSx/ObsidianOS">Source</a>
   </nav>
@@ -136,6 +137,48 @@
           <li>Each account's public keys, which delivery requires</li>
           <li>Roughly when an account is connected</li>
         </ul>
+      </div>
+    </div>
+  </section>
+
+  <section id="transparency" class="band">
+    <h2>How OBSIDIAN earns trust</h2>
+    <p class="section-lede">
+      A privacy claim is worth exactly what someone else can verify. This is where each part stands
+      today, and what the first release has to include. Nothing here is marked done until it is.
+    </p>
+    <div class="matrix">
+      <div class="item">
+        <h3>Open source <span class="chip now">In place</span></h3>
+        <p>Every line of the app, the operating system changes and the server module is public under the GPL-3.0 licence.</p>
+      </div>
+      <div class="item">
+        <h3>Public security development <span class="chip now">In place</span></h3>
+        <p>The work happens in the open, so fixes and mistakes are both visible as they are made.</p>
+      </div>
+      <div class="item">
+        <h3>Reproducible builds <span class="chip next">Planned</span></h3>
+        <p>You will be able to rebuild the phone image from this source and get byte for byte the same result, so nobody has to believe our copy is honest.</p>
+      </div>
+      <div class="item">
+        <h3>Independently verifiable releases <span class="chip next">Planned</span></h3>
+        <p>Every release will publish hashes, so the image you flash can be checked against the one we published.</p>
+      </div>
+      <div class="item">
+        <h3>Signed updates <span class="chip next">Planned</span></h3>
+        <p>Updates will be signed with release keys generated and kept offline, so a phone accepts nothing that did not come from us.</p>
+      </div>
+      <div class="item">
+        <h3>Locked bootloader <span class="chip next">Planned</span></h3>
+        <p>Once release keys exist, the bootloader locks, so modified software cannot be flashed onto the phone. Test builds today leave it unlocked, and say so on this page.</p>
+      </div>
+      <div class="item">
+        <h3>Verified Boot <span class="chip next">Planned</span></h3>
+        <p>The phone will check its own system on every start and refuse to boot if anything has been altered.</p>
+      </div>
+      <div class="item">
+        <h3>Hardware-backed keys and attestation <span class="chip next">Planned</span></h3>
+        <p>Keys sealed by the phone secure hardware, and a way for a phone to prove to you that it is running the real, unmodified OBSIDIAN.</p>
       </div>
     </div>
   </section>

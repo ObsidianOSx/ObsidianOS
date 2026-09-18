@@ -203,3 +203,22 @@ footer p { margin: 0 0 6px; font-size: 14px; }
   .top nav { justify-content: flex-start; gap: 16px; }
   .steps li { flex-direction: column; gap: 10px; }
 }
+
+/* ---------- transparency matrix ---------- */
+
+.matrix { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); }
+.matrix .item {
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 18px 20px; background: rgba(255,255,255,0.015);
+}
+.matrix h3 {
+  margin: 0 0 7px; font-size: 16.5px; font-weight: 500; color: var(--bright);
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.matrix p { margin: 0; color: var(--muted); font-size: 15px; }
+.chip {
+  font-size: 11px; letter-spacing: 0.12em; text-transform: uppercase;
+  border-radius: 999px; padding: 3px 10px; border: 1px solid; white-space: nowrap; font-weight: 400;
+}
+.chip.now { color: #8fe0b0; border-color: #2f5c45; background: rgba(143,224,176,0.08); }
+.chip.next { color: #d9c58a; border-color: #5c5330; background: rgba(217,197,138,0.08); }

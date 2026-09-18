@@ -22,6 +22,17 @@
 # Every file it edits is backed up alongside the original with a .before-obsidian suffix.
 set -eu
 
+# Write or copy only when the content would actually change. Rewriting a file with identical
+# content still moves its timestamp, and a touched Android.bp makes Soong redo its whole analysis,
+# which costs about five hours on the build machine. This keeps repeat attempts cheap.
+write_if_changed() {
+  dest=$1
+  tmp=$(mktemp)
+  cat > "$tmp"
+  if [ -f "$dest" ] && cmp -s "$tmp" "$dest"; then rm -f "$tmp"; else mv "$tmp" "$dest"; fi
+}
+copy_if_changed() { cmp -s "$1" "$2" 2>/dev/null || cp "$1" "$2"; }
+
 OS=${OS_TREE:-$HOME/os}
 V="$OS/vendor/obsidian"
 APKS="$HOME/obsidian/apks"
@@ -32,6 +43,9 @@ TARGET=${1:-emulator}   # "emulator", or a phone codename such as shiba (Pixel 8
 if [ "$TARGET" = emulator ]; then TOR_APK="$APKS/TorBrowser.apk"; else TOR_APK="$APKS/TorBrowser-aarch64.apk"; fi
 
 # PROVEN ON DEVICE 2026-09-17, do not "simplify" these back:
+#  * The Tor Browser payload must NOT be named .apk: the build system rejects any .apk in
+#    PRODUCT_COPY_FILES ("use BUILD_PREBUILT instead"). Android installs happily from a file
+#    with any name, verified with `pm install` on a device, so it ships as TorBrowser.payload.
 #  * Tor Browser must NOT be a system app. Gecko cannot find libmozglue.so when the APK sits in
 #    /product/app with compressed libraries ("Could not find mozglue path"), and it cannot be
 #    replaced at runtime either (fs-verity is required to update a system package). It is shipped
@@ -60,12 +74,12 @@ for f in "$APKS/ObsidianChat.apk" "$TOR_APK"; do
   [ -f "$f" ] || { echo "missing $f"; exit 1; }
 done
 mkdir -p "$V/prebuilt/ObsidianChat" "$V/provision" "$V/install"
-cp "$APKS/ObsidianChat.apk" "$V/prebuilt/ObsidianChat/ObsidianChat.apk"
+copy_if_changed "$APKS/ObsidianChat.apk" "$V/prebuilt/ObsidianChat/ObsidianChat.apk"
 # Tor Browser is a payload file, not a build module - see the note at the top of this script.
-cp "$TOR_APK" "$V/install/TorBrowser.apk"
+copy_if_changed "$TOR_APK" "$V/install/TorBrowser.payload"
 rm -rf "$V/prebuilt/TorBrowser"
 
-cat > "$V/prebuilt/ObsidianChat/Android.bp" <<'EOF'
+write_if_changed "$V/prebuilt/ObsidianChat/Android.bp" <<'EOF'
 // preprocessed: mandatory for presigned APKs targeting SDK 30+. They carry a v2 signature over
 // the whole archive, so any re-alignment or re-signing by the build system destroys it.
 // Deliberately NOT privileged: device owner is granted at runtime by dpm and needs no privileged
@@ -82,15 +96,15 @@ android_app_import {
 EOF
 
 echo "== 2. device owner from first boot"
-cat > "$V/provision/obsidian-provision.sh" <<'EOF'
+write_if_changed "$V/provision/obsidian-provision.sh" <<'EOF'
 #!/system/bin/sh
 # Runs once at first boot.
 if [ "$(getprop obsidian.provisioned)" = "1" ]; then exit 0; fi
 # Tor Browser is installed here rather than bundled into the image: Gecko cannot find its
 # compressed native libraries when the APK lives on a read-only system partition, and a system
 # app cannot be replaced later without fs-verity. Installing also keeps its official signature.
-if [ -f /product/obsidian/TorBrowser.apk ]; then
-  pm install -t /product/obsidian/TorBrowser.apk
+if [ -f /product/obsidian/TorBrowser.payload ]; then
+  pm install -t /product/obsidian/TorBrowser.payload
 fi
 # Three-button navigation instead of gestures: a visible Back button is self-evident, and on a
 # phone with three apps and no dialler, nobody should be stuck in Settings hunting for an edge swipe.
@@ -102,7 +116,7 @@ cmd device_policy set-device-owner obsidian.chat/obsidian.chat.security.PanicDev
 EOF
 chmod 755 "$V/provision/obsidian-provision.sh"
 
-cat > "$V/provision/obsidian-provision.rc" <<'EOF'
+write_if_changed "$V/provision/obsidian-provision.rc" <<'EOF'
 service obsidian_provision /product/bin/obsidian-provision.sh
     class late_start
     user root
@@ -115,7 +129,7 @@ on property:sys.boot_completed=1
 EOF
 
 echo "== 3. the OBSIDIAN product pieces"
-cat > "$V/obsidian.mk" <<'EOF'
+write_if_changed "$V/obsidian.mk" <<'EOF'
 PRODUCT_PACKAGES += \
     ObsidianChat
 
@@ -125,7 +139,7 @@ PRODUCT_PACKAGES += \
 # TorBrowser ships as a plain payload and is installed at first boot, NOT built in - Gecko
 # cannot load compressed libraries from a read-only system partition.
 PRODUCT_COPY_FILES += \
-    vendor/obsidian/install/TorBrowser.apk:$(TARGET_COPY_OUT_PRODUCT)/obsidian/TorBrowser.apk \
+    vendor/obsidian/install/TorBrowser.payload:$(TARGET_COPY_OUT_PRODUCT)/obsidian/TorBrowser.payload \
     vendor/obsidian/provision/obsidian-provision.sh:$(TARGET_COPY_OUT_PRODUCT)/bin/obsidian-provision.sh \
     vendor/obsidian/provision/obsidian-provision.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/obsidian-provision.rc
 EOF
@@ -160,7 +174,7 @@ LAUNCHER_XML="$OS/packages/apps/Launcher3/res/xml"
 for layout in "$LAUNCHER_XML"/default_workspace_*.xml; do
   [ -f "$layout" ] || continue
   [ -f "$layout.before-obsidian" ] || cp -p "$layout" "$layout.before-obsidian"
-  cat > "$layout" <<'WS'
+  write_if_changed "$layout" <<'WS'
 <?xml version="1.0" encoding="utf-8"?>
 <!-- OBSIDIAN: the phone has three apps. Chat sits centre, Tor and Camera either side. -->
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
@@ -205,6 +219,19 @@ if ! grep -q "vendor/obsidian/obsidian.mk" "$PRODUCT_MK"; then
   [ -f "$PRODUCT_MK.before-obsidian" ] || cp -p "$PRODUCT_MK" "$PRODUCT_MK.before-obsidian"
   printf '\n$(call inherit-product-if-exists, vendor/obsidian/obsidian.mk)\n' >> "$PRODUCT_MK"
   echo "  added to $PRODUCT_MK"
+fi
+
+echo "== 7. branding: nothing the user sees should name the upstream project"
+# The framework hardcodes its own label in its manifest rather than in a string resource, and that
+# label is what the notification shade shows for every system notification, for example
+# "GrapheneOS - Serial console enabled" on a test build. Found with: aapt2 dump badging framework-res.apk
+FW_MANIFEST="$OS/frameworks/base/core/res/AndroidManifest.xml"
+if grep -q 'android:label="GrapheneOS"' "$FW_MANIFEST" 2>/dev/null; then
+  [ -f "$FW_MANIFEST.before-obsidian" ] || cp -p "$FW_MANIFEST" "$FW_MANIFEST.before-obsidian"
+  sed -i 's/android:label="GrapheneOS"/android:label="OBSIDIAN"/' "$FW_MANIFEST"
+  echo "  system notifications now show OBSIDIAN"
+else
+  echo "  framework label already carries no upstream name"
 fi
 
 echo

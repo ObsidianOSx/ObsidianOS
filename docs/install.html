@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install OBSIDIAN</title>
+<meta name="description" content="How OBSIDIAN is installed on a phone, and what the finished one-click installer will do.">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <a class="brand" href="index.html" aria-label="OBSIDIAN home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="8" ry="10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    <span>OBSIDIAN</span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="index.html#phone">The phone</a>
+    <a href="index.html#messaging">Messaging</a>
+    <a href="index.html#screens">Screens</a>
+    <a href="index.html#transparency">Transparency</a>
+    <a href="install.html">Install</a>
+    <a class="ghost" href="https://github.com/ObsidianOSx/ObsidianOS">Source</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero compact">
+    <p class="badge">Test builds, for evaluation only</p>
+    <h1>Installing OBSIDIAN</h1>
+    <p class="lede">
+      Putting OBSIDIAN on a phone replaces the operating system it came with. Everything on the
+      phone is erased in the process. Read this page before starting.
+    </p>
+  </section>
+
+  <section class="band">
+    <h2>Two ways to get it</h2>
+    <div class="matrix">
+      <div class="item">
+        <h3>Ready to use <span class="chip now">Recommended</span></h3>
+        <p>The phone arrives with OBSIDIAN already on it and checked. You turn it on, set a PIN, pick a username, and you are done in about five minutes. No computer, no cables, nothing to get wrong.</p>
+      </div>
+      <div class="item">
+        <h3>Install it yourself <span class="chip next">For testers today</span></h3>
+        <p>You flash the phone from your own computer using the steps below. It takes around half an hour, most of which is the phone working on its own.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <h2>What you need</h2>
+    <div class="cards three">
+      <article class="card">
+        <h3>A supported phone</h3>
+        <p>A Pixel 8 to begin with, bought unlocked rather than from a mobile network. Network branded phones often block the unlocking this requires.</p>
+      </article>
+      <article class="card">
+        <h3>A computer and a cable</h3>
+        <p>Windows, macOS or Linux, and the USB-C cable that came with the phone. Plug straight into the computer, not into a hub or a monitor.</p>
+      </article>
+      <article class="card">
+        <h3>About 40 GB free</h3>
+        <p>Room to download and unpack the phone image, and half an hour when you will not need the phone.</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="band">
+    <h2>The steps</h2>
+    <ol class="steps">
+      <li><span>1</span><div>
+        <h3>Allow the phone to be unlocked</h3>
+        <p>On the phone, open Settings, go to About phone, and tap Build number seven times. Go back to Settings, then System, then Developer options, and turn on OEM unlocking. The phone needs to be on Wi-Fi for this.</p>
+      </div></li>
+      <li><span>2</span><div>
+        <h3>Start the phone in bootloader mode</h3>
+        <p>Turn the phone off. Hold Volume Down and press Power until a screen with a start arrow appears. Connect it to the computer.</p>
+      </div></li>
+      <li><span>3</span><div>
+        <h3>Unlock the bootloader</h3>
+        <p>This is what allows a different operating system to be installed, and it erases the phone.</p>
+        <p class="code">fastboot flashing unlock</p>
+      </div></li>
+      <li><span>4</span><div>
+        <h3>Flash OBSIDIAN</h3>
+        <p>Unpack the release and run the flashing script inside it. The phone restarts several times on its own. Do not unplug it.</p>
+      </div></li>
+      <li><span>5</span><div>
+        <h3>First start</h3>
+        <p>The first start takes a few minutes while the phone prepares its apps. Then set a screen PIN, open the chat app, and choose a username. Your keys are made on the phone at that moment.</p>
+      </div></li>
+    </ol>
+    <p class="note">
+      While these are test builds, the bootloader stays unlocked and the phone shows a warning when it
+      starts. That is expected, and it is one of the things that changes with the first proper release.
+    </p>
+  </section>
+
+  <section class="band alt">
+    <h2>What the finished installer will do</h2>
+    <p class="section-lede">
+      The steps above are for testers. The installer people will actually use is being built, and it
+      will do all of it from a web page, with the phone plugged in.
+    </p>
+    <div class="matrix">
+      <div class="item">
+        <h3>Install from the browser <span class="chip next">Planned</span></h3>
+        <p>Open a page, plug the phone in, press a button. No developer tools to install, nothing to type.</p>
+      </div>
+      <div class="item">
+        <h3>Check what it installed <span class="chip next">Planned</span></h3>
+        <p>The release is checked against published hashes before it goes anywhere near the phone.</p>
+      </div>
+      <div class="item">
+        <h3>Lock the phone again <span class="chip next">Planned</span></h3>
+        <p>Once release keys exist, the installer locks the bootloader at the end, so nothing else can be flashed onto the phone afterwards and the startup warning disappears.</p>
+      </div>
+      <div class="item">
+        <h3>Prove it worked <span class="chip next">Planned</span></h3>
+        <p>A way to confirm the phone is running genuine, unmodified OBSIDIAN rather than something that looks like it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band closing">
+    <h2>Not ready to install yet</h2>
+    <p class="section-lede">
+      There is no public release to download at the moment. The first phone build is being made now.
+      Until then, the source is public and can be built by anyone.
+    </p>
+    <a class="button" href="https://github.com/ObsidianOSx/ObsidianOS">github.com/ObsidianOSx/ObsidianOS</a>
+  </section>
+
+</main>
+
+<footer>
+  <p>OBSIDIAN, open source under GPL-3.0</p>
+  <p class="fineprint">This page loads no fonts, scripts, analytics or cookies from anywhere. Nothing here counts your visit.</p>
+</footer>
+
+</body>
+</html>

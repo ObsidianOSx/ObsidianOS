@@ -222,3 +222,17 @@ footer p { margin: 0 0 6px; font-size: 14px; }
 }
 .chip.now { color: #8fe0b0; border-color: #2f5c45; background: rgba(143,224,176,0.08); }
 .chip.next { color: #d9c58a; border-color: #5c5330; background: rgba(217,197,138,0.08); }
+
+/* ---------- install page ---------- */
+
+.hero.compact { padding-block: clamp(56px, 8vw, 96px) clamp(36px, 5vw, 56px); }
+.code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 14.5px; color: var(--text);
+  background: #08080a; border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 14px; margin: 10px 0 0; overflow-x: auto;
+}
+.note {
+  margin: 22px 0 0; padding: 16px 18px; color: var(--muted); font-size: 15px;
+  border: 1px solid #5c5330; border-radius: var(--radius); background: rgba(217,197,138,0.06);
+}

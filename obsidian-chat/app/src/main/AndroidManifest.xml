@@ -3,6 +3,9 @@
 
     <!-- Used only by the embedded Tor daemon; the app itself never opens direct connections -->
     <uses-permission android:name="android.permission.INTERNET" />
+    <!-- To notice when a network appears. Tor gives up quietly if it starts with no connection,
+         and without this the app would sit at 0% until someone restarted it by hand. -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <!-- Only to say a message arrived; the notification carries no sender and no content -->
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 

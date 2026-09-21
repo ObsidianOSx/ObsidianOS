@@ -6,7 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.ServiceConnection
+import android.net.ConnectivityManager
+import android.net.Network
+import android.net.NetworkCapabilities
+import android.net.NetworkRequest
 import android.os.IBinder
+import android.os.SystemClock
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -34,6 +39,10 @@ class TorManager(private val context: Context) {
     private var service: TorService? = null
     private var lastStatus: String? = null
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private var networkCallback: ConnectivityManager.NetworkCallback? = null
+    private var lastRetryAt = 0L
+    private var lastProgress = -1
+    private var lastProgressAt = 0L
 
     private val connection = object : ServiceConnection {
         override fun onServiceConnected(name: ComponentName, binder: IBinder) {
@@ -73,9 +82,62 @@ class TorManager(private val context: Context) {
             val current = _state.value
             if (current is State.Starting) {
                 val phase = runCatching { service?.getInfo("status/bootstrap-phase") }.getOrNull()
-                parseBootstrapPhase(phase)?.let { _state.compareAndSet(current, it) }
+                parseBootstrapPhase(phase)?.let { next ->
+                    // Remember when the number last moved, so a stall can be told from slow progress
+                    if (next.progress != lastProgress) {
+                        lastProgress = next.progress
+                        lastProgressAt = SystemClock.elapsedRealtime()
+                    }
+                    _state.compareAndSet(current, next)
+                }
             }
             delay(2_000)
+        }
+    }
+
+    /**
+     * Tor started before the phone had a network gets stuck: it sits at 0%, or reaches a phase such
+     * as loading the consensus and stays there, until something prods it. That is easy to hit on a
+     * new phone, where the app is opened before joining wi-fi. So watch for a network arriving and
+     * ask the running daemon to bootstrap again.
+     */
+    private fun watchNetwork() {
+        val manager = context.getSystemService(ConnectivityManager::class.java) ?: return
+        val callback = object : ConnectivityManager.NetworkCallback() {
+            override fun onAvailable(network: Network) = onNetworkUsable()
+
+            override fun onCapabilitiesChanged(network: Network, capabilities: NetworkCapabilities) {
+                if (capabilities.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)) onNetworkUsable()
+            }
+        }
+        networkCallback = callback
+        val request = NetworkRequest.Builder()
+            .addCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET)
+            .build()
+        runCatching { manager.registerNetworkCallback(request, callback) }
+    }
+
+    private fun onNetworkUsable() {
+        val now = SystemClock.elapsedRealtime()
+        if (!shouldRetryForNetwork(_state.value, now - lastRetryAt, now - lastProgressAt)) return
+        lastRetryAt = now
+        scope.launch { retryBootstrap() }
+    }
+
+    /**
+     * Asks the running Tor to start its bootstrap over, using the network that just arrived.
+     *
+     * The daemon must never be stopped and started again to achieve this. Tor keeps state in
+     * globals inside its native library and deliberately aborts the whole process if it is
+     * initialised a second time, so re-binding the service crashes the app rather than recovering
+     * it. Toggling DisableNetwork over the control port gets the same result from inside the
+     * daemon that is already running.
+     */
+    private fun retryBootstrap() {
+        val control = service?.torControlConnection ?: return
+        runCatching {
+            control.setConf("DisableNetwork", "1")
+            control.setConf("DisableNetwork", "0")
         }
     }
 
@@ -85,14 +147,40 @@ class TorManager(private val context: Context) {
             addAction(TorService.ACTION_ERROR)
         }
         ContextCompat.registerReceiver(context, statusReceiver, filter, ContextCompat.RECEIVER_NOT_EXPORTED)
+        // Android delivers a network callback the moment we register, so start both clocks here;
+        // otherwise the first bootstrap is interrupted before it has had a chance to get anywhere.
+        val now = SystemClock.elapsedRealtime()
+        lastRetryAt = now
+        lastProgressAt = now
         context.bindService(Intent(context, TorService::class.java), connection, Context.BIND_AUTO_CREATE)
         watchBootstrap()
+        watchNetwork()
     }
 
     companion object {
         private val PROGRESS = Regex("PROGRESS=(\\d+)")
         private val SUMMARY = Regex("SUMMARY=\"([^\"]*)\"")
         private val WARNING = Regex("WARNING=\"([^\"]*)\"")
+
+        /** Long enough that a network flapping on and off cannot put Tor in a retry loop. */
+        const val RETRY_BACKOFF_MS = 20_000L
+
+        /** How long bootstrap must sit at the same percentage before we treat it as stuck. */
+        const val STALL_MS = 20_000L
+
+        /**
+         * Prod Tor when a network appears, unless it is already connected, we prodded it a moment
+         * ago, or it is still making progress on its own. Android delivers these callbacks in
+         * bursts, several per network change, and sends one immediately on registering.
+         */
+        fun shouldRetryForNetwork(
+            state: State,
+            millisSinceLastRetry: Long,
+            millisSinceProgress: Long,
+        ): Boolean =
+            state !is State.Ready &&
+                millisSinceLastRetry >= RETRY_BACKOFF_MS &&
+                millisSinceProgress >= STALL_MS
 
         /**
          * Parses a reply such as `NOTICE BOOTSTRAP PROGRESS=45 TAG=loading_descriptors SUMMARY="Loading

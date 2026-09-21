@@ -45,10 +45,14 @@
   <section class="band">
     <h2>You put it on your own phone</h2>
     <p class="section-lede">
-      OBSIDIAN does not come on a phone. You buy a Pixel 8 and install it from your own computer,
-      using the steps below. It takes around half an hour, most of which is the phone working on
-      its own.
+      OBSIDIAN does not come on a phone. You buy a Pixel 8 and install it from your own computer.
+      The easiest way is the browser installer: open it in Chrome, Edge or Brave, plug the phone in,
+      and press each button in turn. The steps further down do the same thing from a command line.
+      Either way it takes around half an hour, most of which is the phone working on its own.
     </p>
+    <div class="cta">
+      <a class="button" href="web-install.html">Open the browser installer</a>
+    </div>
   </section>
 
   <section class="band alt">
@@ -82,7 +86,7 @@
       </div>
       <div class="item">
         <h3>On Windows</h3>
-        <p>Windows 10 and 11 already include a driver that works with the Pixel 8 in bootloader mode. Older versions of Windows need Google's USB driver.</p>
+        <p>Windows 10 and 11 already include a driver that works with the Pixel 8 in bootloader mode. Older versions of Windows need Google's USB driver. If flashing stops when the phone shows its fastbootd screen, Windows has not attached a driver for that mode: in Device Manager, update the Pixel 8's driver to WinUsb Device, as the <a href="web-install.html">browser installer</a> page describes.</p>
       </div>
       <div class="item">
         <h3>On Linux</h3>
@@ -153,21 +157,20 @@
   </section>
 
   <section class="band alt">
-    <h2>What the finished installer will do</h2>
+    <h2>The browser installer</h2>
     <p class="section-lede">
-      The steps above are for testers. The installer people will actually use is being built, and it
-      will do all of it from a web page in Chrome, Edge or another browser built on Chromium, with the
-      phone plugged in. It will need more free space than the steps above, because the browser keeps
-      the unpacked image itself.
+      It does everything above from a web page in Chrome, Edge or another browser built on Chromium,
+      with the phone plugged in. It needs more free space than the command line, because the browser
+      keeps its own copy of the unpacked image while it works. Two parts are still to come.
     </p>
     <div class="matrix">
       <div class="item">
-        <h3>Install from the browser <span class="chip next">Planned</span></h3>
+        <h3>Install from the browser <span class="chip now">Built</span></h3>
         <p>Open a page, plug the phone in, press a button. No developer tools to install, nothing to type.</p>
       </div>
       <div class="item">
-        <h3>Check what it installed <span class="chip next">Planned</span></h3>
-        <p>The release is checked against published hashes before it goes anywhere near the phone.</p>
+        <h3>Check what it installed <span class="chip now">Built</span></h3>
+        <p>The release is checked against its published SHA-256 as it downloads, and it is not used unless it matches.</p>
       </div>
       <div class="item">
         <h3>Lock the phone again <span class="chip next">Planned</span></h3>

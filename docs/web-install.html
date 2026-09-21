@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Install OBSIDIAN from your browser</title>
+<meta name="description" content="Install OBSIDIAN on a Google Pixel 8 straight from this page, with nothing to install on your computer.">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
+<script type="module" src="js/web-install.mjs"></script>
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <a class="brand" href="index.html" aria-label="OBSIDIAN home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="8" ry="10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    <span>OBSIDIAN</span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="index.html#phone">The phone</a>
+    <a href="index.html#messaging">Messaging</a>
+    <a href="index.html#screens">Screens</a>
+    <a href="index.html#transparency">Transparency</a>
+    <a href="devices.html">Pixel 8</a>
+    <a href="install.html">Install</a>
+    <a href="donate.html">Donate</a>
+    <a class="ghost" href="https://github.com/ObsidianOSx/ObsidianOS">Source</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero compact">
+    <p class="badge">Test builds, for evaluation only</p>
+    <h1>Install from your browser</h1>
+    <p class="lede">
+      Put OBSIDIAN on a Pixel 8 from this page, using Chrome, Edge or Brave on a computer. There is
+      nothing to install on the computer and nothing to type. Everything on the phone is erased.
+    </p>
+    <p class="status" id="support" role="status">Checking this browser...</p>
+    <noscript><p class="status" data-kind="bad">The installer needs JavaScript, because it talks to the phone from inside the browser. The rest of this site works without it.</p></noscript>
+  </section>
+
+  <section class="band">
+    <ol class="steps installer">
+      <li><span>1</span><div>
+        <h3>Get the phone ready</h3>
+        <p>On the phone, open Settings, go to About phone, and tap Build number seven times. Go back to Settings, then System, then Developer options, and turn on OEM unlocking. The phone needs to be on Wi-Fi for this. <a href="devices.html">Check your phone</a> first if you are not sure it is a Pixel 8.</p>
+      </div></li>
+      <li><span>2</span><div>
+        <h3>Start it in bootloader mode</h3>
+        <p>Turn the phone off. Hold Volume Down and press Power until a screen with a start arrow appears. Connect it straight to the computer with the cable that came with it, not through a hub.</p>
+      </div></li>
+      <li><span>3</span><div>
+        <h3>Connect</h3>
+        <p>Your browser will ask which device this page may use. Choose the phone.</p>
+        <button class="button" id="connect" type="button" disabled>Connect phone</button>
+        <p class="status" id="connect-status" role="status"></p>
+      </div></li>
+      <li><span>4</span><div>
+        <h3>Unlock the bootloader</h3>
+        <p>This lets a different operating system be installed, and it erases the phone. You confirm it on the phone itself.</p>
+        <button class="button" id="unlock" type="button" disabled>Unlock bootloader</button>
+        <p class="status" id="unlock-status" role="status"></p>
+      </div></li>
+      <li><span>5</span><div>
+        <h3>Download OBSIDIAN</h3>
+        <p>About 2 GB, from this site. It is checked against the published SHA-256 as it arrives, and it is not used unless it matches.</p>
+        <button class="button" id="download" type="button" disabled>Download</button>
+        <progress id="download-bar" max="1" value="0" hidden></progress>
+        <p class="status" id="download-status" role="status"></p>
+      </div></li>
+      <li><span>6</span><div>
+        <h3>Install</h3>
+        <p>Takes about ten minutes. The phone restarts several times on its own. Keep it plugged in and keep this page open.</p>
+        <button class="button" id="install" type="button" disabled>Install OBSIDIAN</button>
+        <button class="button quiet" id="reconnect" type="button" hidden>Reconnect</button>
+        <progress id="install-bar" max="1" value="0" hidden></progress>
+        <p class="status" id="install-status" role="status"></p>
+      </div></li>
+      <li><span>7</span><div>
+        <h3>First start</h3>
+        <p>The first start takes a few minutes. The phone sets itself up while you wait: it installs Tor Browser and takes the settings that keep it locked down. Then set a screen PIN, open the chat app and choose a username. Your keys are made on the phone at that moment.</p>
+      </div></li>
+    </ol>
+    <p class="note">
+      Leave the bootloader unlocked. These are test builds, signed with test keys, and a phone locked to
+      an operating system it cannot verify refuses to start. The phone shows a warning when it starts
+      because of this. Locking comes with the first proper release.
+    </p>
+  </section>
+
+  <section class="band alt">
+    <h2>If something goes wrong</h2>
+    <div class="matrix">
+      <div class="item">
+        <h3>The phone is not in the list</h3>
+        <p>Check it shows the start arrow screen, and that the cable goes straight into the computer. On Linux, set up USB access first, as described on the <a href="install.html">install page</a>. Windows 10 and 11 need nothing extra at this stage.</p>
+      </div>
+      <div class="item">
+        <h3>On Windows it stops at the fastbootd screen</h3>
+        <p>Partway through, the phone switches to a screen titled fastbootd, and some Windows computers do not attach a driver to it. Open Device Manager and right-click Pixel 8, which has a yellow warning sign. Choose Update driver, then Browse my computer, then Let me pick. Pick Universal Serial Bus devices, then WinUsb Device in both lists, and confirm. Then press Reconnect. Each computer needs this only once.</p>
+      </div>
+      <div class="item">
+        <h3>It says the phone is in use</h3>
+        <p>Another program is holding it. Usually that is adb, which keeps running in the background even after its window is closed: run adb kill-server, or restart the computer. Then unplug the phone, plug it back in, and connect again.</p>
+      </div>
+      <div class="item">
+        <h3>It stopped part way</h3>
+        <p>Nothing is lost by starting again. Put the phone back into bootloader mode, connect, and install again. The download is kept until you close this page.</p>
+      </div>
+      <div class="item">
+        <h3>The phone says it is corrupt</h3>
+        <p>That is expected after an install stops part way: the phone has the new start-up files but not yet the new system, and they do not match. Hold Power and Volume Down until the start arrow screen appears, then install again.</p>
+      </div>
+      <div class="item">
+        <h3>Going back to normal Android</h3>
+        <p>You can put Google's software back at any time. The <a href="install.html">install page</a> shows how.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <p>OBSIDIAN, open source under GPL-3.0</p>
+  <p class="fineprint">This page runs its installer and the open source fastboot.js library, both served from this site, to talk to your phone over USB. It loads nothing from anywhere else, and nothing here counts your visit.</p>
+</footer>
+
+</body>
+</html>

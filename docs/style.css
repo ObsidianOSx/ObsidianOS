@@ -249,3 +249,24 @@ footer p { margin: 0 0 6px; font-size: 14px; }
 }
 /* The warning under the address keeps the address's width but wraps like ordinary text. */
 .closing .note { max-width: 640px; margin-inline: auto; text-align: left; }
+
+/* Browser installer. Real buttons need their own font and cursor, and a disabled look that reads as "not yet". */
+button.button { font: inherit; font-size: 15px; cursor: pointer; }
+button.button:disabled { opacity: 0.35; cursor: not-allowed; }
+button.button:disabled:hover { background: var(--bright); border-color: var(--bright); }
+button.button.quiet:disabled:hover { background: transparent; border-color: var(--line); }
+.installer .button { margin: 14px 10px 0 0; }
+.status { margin: 12px 0 0; font-size: 15px; color: var(--muted); }
+.status:empty { display: none; }
+.status[data-kind="ok"] { color: #8fe0b0; }
+.status[data-kind="warn"] { color: #d9c58a; }
+.status[data-kind="bad"] { color: var(--danger); }
+.hero .status { margin-top: 22px; }
+.installer progress {
+  display: block; width: 100%; max-width: 480px; height: 6px; margin: 14px 0 0;
+  appearance: none; border: 0; border-radius: 999px; background: var(--line); overflow: hidden;
+}
+.installer progress[hidden] { display: none; }
+.installer progress::-webkit-progress-bar { background: var(--line); border-radius: 999px; }
+.installer progress::-webkit-progress-value { background: var(--accent); border-radius: 999px; }
+.installer progress::-moz-progress-bar { background: var(--accent); border-radius: 999px; }

@@ -236,3 +236,16 @@ footer p { margin: 0 0 6px; font-size: 14px; }
   margin: 22px 0 0; padding: 16px 18px; color: var(--muted); font-size: 15px;
   border: 1px solid #5c5330; border-radius: var(--radius); background: rgba(217,197,138,0.06);
 }
+
+/* Donations. The QR stays dark on light whatever the theme: many wallet scanners cannot read an inverted code. */
+.qr {
+  display: block; width: 220px; height: 220px; margin: 24px auto 0;
+  border-radius: 12px; background: #fff; image-rendering: pixelated;
+}
+/* A 95 character address has no spaces, so let it wrap rather than scroll, and select it whole in one tap. */
+.address {
+  word-break: break-all; user-select: all; overflow-x: visible;
+  text-align: left; max-width: 640px; margin-inline: auto;
+}
+/* The warning under the address keeps the address's width but wraps like ordinary text. */
+.closing .note { max-width: 640px; margin-inline: auto; text-align: left; }

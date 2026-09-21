@@ -311,6 +311,16 @@ if [ -f "$FW_STRINGS" ] && grep -q "$UPSTREAM_NAME" "$FW_STRINGS"; then
   sed -i "s/$UPSTREAM_NAME/OBSIDIAN/g" "$FW_STRINGS"
   echo "  framework strings cleared"
 fi
+# The recovery program titles its own screens, and everyone who installs sees one of them: the
+# installer restarts the phone into fastbootd to write the system partitions. Only these two titles
+# carry the name; the rest of recovery's text is generic.
+for RC_SRC in "$OS/bootable/recovery/fastboot/fastboot.cpp" "$OS/bootable/recovery/recovery.cpp"; do
+  if [ -f "$RC_SRC" ] && grep -q "\"$UPSTREAM_NAME \(Fastboot\|Recovery\)\"" "$RC_SRC"; then
+    backup_file "$RC_SRC"
+    sed -i "s/\"$UPSTREAM_NAME \(Fastboot\|Recovery\)\"/\"OBSIDIAN \1\"/" "$RC_SRC"
+    echo "  $(basename "$RC_SRC") now titles its screen OBSIDIAN"
+  fi
+done
 
 echo "== 9. location off from the very first boot"
 # Stock Android starts at 3, meaning location on and accurate. That leaves a window on a brand new

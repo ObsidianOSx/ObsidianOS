@@ -19,7 +19,7 @@
 #   removing it breaks every app that renders a web page, including parts of Settings. Only the
 #   standalone Chrome browser (TrichromeChrome) goes, since Tor Browser is the browser here.
 #
-# Every file it edits is backed up alongside the original with a .before-obsidian suffix.
+# Every file it edits is backed up under ~/obsidian/backups, mirroring its path in the tree.
 set -eu
 
 # Write or copy only when the content would actually change. Rewriting a file with identical
@@ -33,8 +33,28 @@ write_if_changed() {
 }
 copy_if_changed() { cmp -s "$1" "$2" 2>/dev/null || cp "$1" "$2"; }
 
+# Keep backups OUTSIDE the source tree. Android compiles every file inside a resource
+# folder, and a name like default_workspace_5x5.xml.before-obsidian is not a valid
+# resource name, so a backup left beside the original breaks the build 31% into a compile.
+BACKUPS=${OBSIDIAN_BACKUPS:-$HOME/obsidian/backups}
+backup_file() {
+  rel=${1#"$OS/"}
+  dest=$BACKUPS/$rel
+  [ -f "$dest" ] && return 0
+  mkdir -p "$(dirname "$dest")"
+  cp -p "$1" "$dest"
+}
+
 OS=${OS_TREE:-$HOME/os}
 V="$OS/vendor/obsidian"
+
+# A few strings the user sees name the upstream project, and steps 7 and 8 replace them. The name is
+# read from a private file beside this script rather than written here, so the public source carries
+# no upstream branding. That file is gitignored; create it with a single line: UPSTREAM_NAME=<name>
+HERE=$(cd "$(dirname "$0")" && pwd)
+if [ -f "$HERE/upstream.env" ]; then . "$HERE/upstream.env"; fi
+UPSTREAM_NAME=${UPSTREAM_NAME:?"set UPSTREAM_NAME in $HERE/upstream.env"}
+UPSTREAM_LC=$(printf '%s' "$UPSTREAM_NAME" | tr '[:upper:]' '[:lower:]')
 APKS="$HOME/obsidian/apks"
 PRODUCT="$OS/build/make/target/product"
 EMULATOR_MK="$OS/device/generic/goldfish/product/phone.mk"
@@ -50,8 +70,10 @@ if [ "$TARGET" = emulator ]; then TOR_APK="$APKS/TorBrowser.apk"; else TOR_APK="
 #    /product/app with compressed libraries ("Could not find mozglue path"), and it cannot be
 #    replaced at runtime either (fs-verity is required to update a system package). It is shipped
 #    as a plain file and installed at first boot, which also preserves its official signature.
-#  * The init service that provisions device owner is blocked by SELinux ("no domain transition
-#    from u:r:init:s0"). Until a vendor sepolicy domain exists, device owner must be set over adb.
+#  * The init service that provisions device owner was blocked by SELinux ("no domain transition
+#    from u:r:init:s0") while it ran as root in init's domain. It now runs /system/bin/sh with
+#    seclabel u:r:shell:s0, the domain adb shell uses, which needs no new policy. Verified on a
+#    Pixel 8: started at boot, exited 0, and restored three-button navigation by itself.
 #  * The home screen dock comes from Launcher3's default_workspace_*.xml (container -101 is the
 #    hotseat), which hardcodes Dialer/Messaging/Browser/Camera. Two of those no longer exist here,
 #    which is why the dock looked half empty. Step 6 replaces them with our three apps.
@@ -78,6 +100,7 @@ copy_if_changed "$APKS/ObsidianChat.apk" "$V/prebuilt/ObsidianChat/ObsidianChat.
 # Tor Browser is a payload file, not a build module - see the note at the top of this script.
 copy_if_changed "$TOR_APK" "$V/install/TorBrowser.payload"
 rm -rf "$V/prebuilt/TorBrowser"
+rm -f "$V/install/TorBrowser.apk"   # stale name from before the payload rename
 
 write_if_changed "$V/prebuilt/ObsidianChat/Android.bp" <<'EOF'
 // preprocessed: mandatory for presigned APKs targeting SDK 30+. They carry a v2 signature over
@@ -98,29 +121,41 @@ EOF
 echo "== 2. device owner from first boot"
 write_if_changed "$V/provision/obsidian-provision.sh" <<'EOF'
 #!/system/bin/sh
-# Runs once at first boot.
-if [ "$(getprop obsidian.provisioned)" = "1" ]; then exit 0; fi
+# Runs at every boot. Each step checks whether it is already done rather than recording a flag,
+# because a custom property would need its own type in property_contexts and permission to set it;
+# asking the system what it already looks like avoids that entirely.
+
 # Tor Browser is installed here rather than bundled into the image: Gecko cannot find its
 # compressed native libraries when the APK lives on a read-only system partition, and a system
 # app cannot be replaced later without fs-verity. Installing also keeps its official signature.
-if [ -f /product/obsidian/TorBrowser.payload ]; then
+if [ -f /product/obsidian/TorBrowser.payload ] && ! pm path org.torproject.torbrowser >/dev/null 2>&1; then
   pm install -t /product/obsidian/TorBrowser.payload
 fi
+
 # Three-button navigation instead of gestures: a visible Back button is self-evident, and on a
 # phone with three apps and no dialler, nobody should be stuck in Settings hunting for an edge swipe.
 cmd overlay enable-exclusive com.android.internal.systemui.navbar.threebutton
 
-# Device owner: holds location off, requires a screen lock, and enables the panic wipe.
-cmd device_policy set-device-owner obsidian.chat/obsidian.chat.security.PanicDeviceAdmin && \
-  setprop obsidian.provisioned 1
+# Device owner: holds location off, requires a screen lock, and enables the panic wipe. It can only
+# be claimed while the phone is still unprovisioned, so this has to land on the first boot after a
+# wipe, before anyone finishes the setup screens.
+if ! dumpsys device_policy 2>/dev/null | grep -q "admin=ComponentInfo{obsidian.chat"; then
+  cmd device_policy set-device-owner obsidian.chat/obsidian.chat.security.PanicDeviceAdmin
+fi
 EOF
 chmod 755 "$V/provision/obsidian-provision.sh"
 
 write_if_changed "$V/provision/obsidian-provision.rc" <<'EOF'
-service obsidian_provision /product/bin/obsidian-provision.sh
+# Runs in the shell domain, which is the one adb shell itself uses and therefore the one pm, cmd
+# and device_policy already expect to be called from. Starting /system/bin/sh and passing the
+# script, rather than executing the script directly, is what makes that transition legal, and is
+# the same shape as AOSP's own console service. The previous version ran as root in u:r:init:s0,
+# where SELinux refuses the binder calls these commands need, so it failed silently on every boot.
+service obsidian_provision /system/bin/sh /product/bin/obsidian-provision.sh
     class late_start
-    user root
-    group root
+    user shell
+    group shell
+    seclabel u:r:shell:s0
     oneshot
     disabled
 
@@ -148,7 +183,7 @@ echo "== 4. leave out the apps a private phone has no use for"
 drop() { # drop <module> <makefile>
   local app=$1 mk=$2
   [ -f "$mk" ] || return 0
-  [ -f "$mk.before-obsidian" ] || cp -p "$mk" "$mk.before-obsidian"
+  backup_file "$mk"
   if grep -qE "^[[:space:]]+$app[[:space:]]*\\\\?$" "$mk"; then
     sed -i -E "/^[[:space:]]+$app[[:space:]]*\\\\?$/d" "$mk"
     echo "  dropped $app from $(basename "$mk")"
@@ -173,7 +208,7 @@ echo "== 6. our three apps in the launcher dock"
 LAUNCHER_XML="$OS/packages/apps/Launcher3/res/xml"
 for layout in "$LAUNCHER_XML"/default_workspace_*.xml; do
   [ -f "$layout" ] || continue
-  [ -f "$layout.before-obsidian" ] || cp -p "$layout" "$layout.before-obsidian"
+  backup_file "$layout"
   write_if_changed "$layout" <<'WS'
 <?xml version="1.0" encoding="utf-8"?>
 <!-- OBSIDIAN: the phone has three apps. Chat sits centre, Tor and Camera either side. -->
@@ -216,7 +251,7 @@ else
 fi
 [ -f "$PRODUCT_MK" ] || { echo "  missing $PRODUCT_MK - run adevtool generate-all -d $TARGET first"; exit 1; }
 if ! grep -q "vendor/obsidian/obsidian.mk" "$PRODUCT_MK"; then
-  [ -f "$PRODUCT_MK.before-obsidian" ] || cp -p "$PRODUCT_MK" "$PRODUCT_MK.before-obsidian"
+  backup_file "$PRODUCT_MK"
   printf '\n$(call inherit-product-if-exists, vendor/obsidian/obsidian.mk)\n' >> "$PRODUCT_MK"
   echo "  added to $PRODUCT_MK"
 fi
@@ -224,14 +259,70 @@ fi
 echo "== 7. branding: nothing the user sees should name the upstream project"
 # The framework hardcodes its own label in its manifest rather than in a string resource, and that
 # label is what the notification shade shows for every system notification, for example
-# "UPSTREAM_NAME - Serial console enabled" on a test build. Found with: aapt2 dump badging framework-res.apk
+# "<upstream name> - Serial console enabled" on a test build. Found with: aapt2 dump badging framework-res.apk
 FW_MANIFEST="$OS/frameworks/base/core/res/AndroidManifest.xml"
-if grep -q 'android:label="UPSTREAM_NAME"' "$FW_MANIFEST" 2>/dev/null; then
-  [ -f "$FW_MANIFEST.before-obsidian" ] || cp -p "$FW_MANIFEST" "$FW_MANIFEST.before-obsidian"
-  sed -i 's/android:label="UPSTREAM_NAME"/android:label="OBSIDIAN"/' "$FW_MANIFEST"
+if grep -q "android:label=\"$UPSTREAM_NAME\"" "$FW_MANIFEST" 2>/dev/null; then
+  backup_file "$FW_MANIFEST"
+  sed -i "s/android:label=\"$UPSTREAM_NAME\"/android:label=\"OBSIDIAN\"/" "$FW_MANIFEST"
   echo "  system notifications now show OBSIDIAN"
 else
   echo "  framework label already carries no upstream name"
+fi
+
+echo "== 8. the setup wizard: the first thing anyone sees on a new phone"
+# It greets you by the upstream name and shows that project's logo. Six user-visible strings across
+# the whole tree carry the name; these are them. Links to the upstream website are left alone where
+# they point at real services, and replaced where they are ours to own.
+SW="$OS/packages/apps/SetupWizard2/res/values/strings.xml"
+if [ -f "$SW" ] && grep -q "$UPSTREAM_NAME" "$SW"; then
+  backup_file "$SW"
+  sed -i "s/$UPSTREAM_NAME/OBSIDIAN/g" "$SW"
+  sed -i "s#>$UPSTREAM_LC\\.org/UBL<#>github.com/ObsidianOSx/ObsidianOS<#" "$SW"
+  # Their tagline carries no product name, so the rename above does not touch it.
+  sed -i "s#<string name=\"${UPSTREAM_LC}_desc\">[^<]*</string>#<string name=\"${UPSTREAM_LC}_desc\">Three apps. Everything encrypted. Nothing to sell.</string>#" "$SW"
+  echo "  setup wizard now welcomes you to OBSIDIAN ($(grep -c OBSIDIAN "$SW") strings)"
+fi
+# The welcome and finish screens show a logo. Keep the file name, since layouts reference it,
+# and replace the artwork with the OBSIDIAN mark: a single thin O.
+SW_ICON="$OS/packages/apps/SetupWizard2/res/drawable/${UPSTREAM_LC}_icon.xml"
+if [ -f "$SW_ICON" ] && ! grep -q "OBSIDIAN mark" "$SW_ICON"; then
+  backup_file "$SW_ICON"
+  write_if_changed "$SW_ICON" <<'ICON'
+<!-- OBSIDIAN mark: a single thin O. File name kept because the layouts reference it. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="253.8dp"
+    android:height="253.8dp"
+    android:tint="?android:attr/textColorPrimary"
+    android:viewportWidth="256"
+    android:viewportHeight="256">
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#FFFFFF"
+        android:strokeWidth="6"
+        android:pathData="M128,24 C167,24 198,70 198,128 C198,186 167,232 128,232 C89,232 58,186 58,128 C58,70 89,24 128,24 Z" />
+</vector>
+ICON
+  echo "  welcome screen logo replaced with the OBSIDIAN mark"
+fi
+# One stray mention in the framework's own strings, in a message about old 32-bit apps.
+FW_STRINGS="$OS/frameworks/base/core/res/res/values/strings.xml"
+if [ -f "$FW_STRINGS" ] && grep -q "$UPSTREAM_NAME" "$FW_STRINGS"; then
+  backup_file "$FW_STRINGS"
+  sed -i "s/$UPSTREAM_NAME/OBSIDIAN/g" "$FW_STRINGS"
+  echo "  framework strings cleared"
+fi
+
+echo "== 9. location off from the very first boot"
+# Stock Android starts at 3, meaning location on and accurate. That leaves a window on a brand new
+# phone: location is live from first boot until the chat app becomes device owner and turns it off.
+# Starting at 0 closes it. The device owner restrictions then stop anyone turning it back on.
+LOC_DEFAULTS="$OS/frameworks/base/packages/SettingsProvider/res/values/defaults.xml"
+if [ -f "$LOC_DEFAULTS" ] && grep -q '<integer name="def_location_mode">3</integer>' "$LOC_DEFAULTS"; then
+  backup_file "$LOC_DEFAULTS"
+  sed -i 's#<integer name="def_location_mode">3</integer>#<integer name="def_location_mode">0</integer>#' "$LOC_DEFAULTS"
+  echo "  location now starts switched off"
+else
+  echo "  location default already off"
 fi
 
 echo

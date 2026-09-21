@@ -26,3 +26,6 @@ captures/
 
 # Emulator test runs: screenshots, logs and throwaway accounts
 obsidian-chat/tools/emulator-test/local/
+
+# The upstream project name, used by the change script to replace it. Kept out of the public source.
+obsidian-os/scripts/upstream.env

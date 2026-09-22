@@ -12,6 +12,7 @@ import android.net.NetworkCapabilities
 import android.net.NetworkRequest
 import android.os.IBinder
 import android.os.SystemClock
+import android.util.Log
 import androidx.core.content.ContextCompat
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -87,8 +88,18 @@ class TorManager(private val context: Context) {
                     if (next.progress != lastProgress) {
                         lastProgress = next.progress
                         lastProgressAt = SystemClock.elapsedRealtime()
+                        Log.i(TAG, "bootstrap ${next.progress}%: ${next.summary ?: ""}")
                     }
                     _state.compareAndSet(current, next)
+                }
+                // A bootstrap can also stall while the network stays up, and then no network callback
+                // ever arrives to prompt a retry. Check for that here too, but only after a full minute
+                // without progress, so a slow first connection is left to finish on its own.
+                val now = SystemClock.elapsedRealtime()
+                if (shouldRetryForStall(_state.value, now - lastRetryAt, now - lastProgressAt)) {
+                    Log.i(TAG, "bootstrap stuck at $lastProgress% for ${(now - lastProgressAt) / 1000} s; asking Tor to start again")
+                    lastRetryAt = now
+                    retryBootstrap()
                 }
             }
             delay(2_000)
@@ -120,6 +131,7 @@ class TorManager(private val context: Context) {
     private fun onNetworkUsable() {
         val now = SystemClock.elapsedRealtime()
         if (!shouldRetryForNetwork(_state.value, now - lastRetryAt, now - lastProgressAt)) return
+        Log.i(TAG, "network available while bootstrap is stuck at $lastProgress%; asking Tor to start again")
         lastRetryAt = now
         scope.launch { retryBootstrap() }
     }
@@ -134,11 +146,15 @@ class TorManager(private val context: Context) {
      * daemon that is already running.
      */
     private fun retryBootstrap() {
-        val control = service?.torControlConnection ?: return
+        val control = service?.torControlConnection
+        if (control == null) {
+            Log.w(TAG, "no control connection yet; retry skipped")
+            return
+        }
         runCatching {
             control.setConf("DisableNetwork", "1")
             control.setConf("DisableNetwork", "0")
-        }
+        }.onFailure { Log.w(TAG, "retry failed", it) }
     }
 
     fun start() {
@@ -167,6 +183,20 @@ class TorManager(private val context: Context) {
 
         /** How long bootstrap must sit at the same percentage before we treat it as stuck. */
         const val STALL_MS = 20_000L
+
+        /**
+         * With no network change to go on, wait longer before calling a bootstrap stuck, and retry at most
+         * this often: a first connection on a new phone downloads the whole network directory.
+         */
+        const val STALL_WITHOUT_NETWORK_MS = 60_000L
+
+        private const val TAG = "ObsidianTor"
+
+        /** Prod Tor when bootstrap has made no progress for a minute and was not prodded in that minute. */
+        fun shouldRetryForStall(state: State, millisSinceLastRetry: Long, millisSinceProgress: Long): Boolean =
+            state is State.Starting &&
+                millisSinceLastRetry >= STALL_WITHOUT_NETWORK_MS &&
+                millisSinceProgress >= STALL_WITHOUT_NETWORK_MS
 
         /**
          * Prod Tor when a network appears, unless it is already connected, we prodded it a moment

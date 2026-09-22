@@ -65,6 +65,32 @@ class TorManagerTest {
         assertFalse(TorManager.shouldRetryForNetwork(TorManager.State.Starting(0), 0, 0))
     }
 
+    private val aMinute = TorManager.STALL_WITHOUT_NETWORK_MS
+
+    // With the network steady, no callback ever arrives, so a stall has to be noticed on its own.
+    @Test
+    fun `prods tor that has made no progress for a minute with the network steady`() {
+        assertTrue(TorManager.shouldRetryForStall(TorManager.State.Starting(0), aMinute, aMinute))
+        assertTrue(TorManager.shouldRetryForStall(TorManager.State.Starting(45, "loading"), aMinute * 5, aMinute * 2))
+    }
+
+    @Test
+    fun `lets a slow first connection finish on its own`() {
+        assertFalse(TorManager.shouldRetryForStall(TorManager.State.Starting(10), aMinute, aMinute - 1))
+        assertFalse(TorManager.shouldRetryForStall(TorManager.State.Starting(0), aMinute, 30_000))
+    }
+
+    @Test
+    fun `prods a stalled tor at most once a minute`() {
+        assertFalse(TorManager.shouldRetryForStall(TorManager.State.Starting(0), aMinute - 1, aMinute * 3))
+    }
+
+    @Test
+    fun `never prods a connected or failed tor for a stall`() {
+        assertFalse(TorManager.shouldRetryForStall(TorManager.State.Ready(9050), aMinute * 9, aMinute * 9))
+        assertFalse(TorManager.shouldRetryForStall(TorManager.State.Failed("no route"), aMinute * 9, aMinute * 9))
+    }
+
     @Test
     fun `leaves a slow but advancing bootstrap alone`() {
         assertFalse(

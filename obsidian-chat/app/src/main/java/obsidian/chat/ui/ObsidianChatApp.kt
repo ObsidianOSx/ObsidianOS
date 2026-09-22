@@ -70,26 +70,36 @@ fun ObsidianChatApp(vm: AppViewModel = viewModel()) {
 @Composable
 private fun ConnectionBar(tor: TorManager.State, status: ChatClient.Status, onRetry: () -> Unit) {
     val torText = when (tor) {
-        is TorManager.State.Starting -> "Connecting to Tor… ${tor.progress}%" + (tor.summary?.let { " · $it" } ?: "")
+        is TorManager.State.Starting -> "Connecting to Tor... ${tor.progress}%" + (tor.summary?.let { ", $it" } ?: "")
         is TorManager.State.Ready -> "Tor connected"
         is TorManager.State.Failed -> "Tor failed: ${tor.reason}"
     }
     val chatText = when (status) {
         ChatClient.Status.SignedOut -> ""
-        ChatClient.Status.Connecting -> " · connecting to server…"
-        is ChatClient.Status.Online -> " · online"
-        is ChatClient.Status.Failed -> " · offline: ${status.message.withoutServerName()}"
+        ChatClient.Status.Connecting -> ", connecting to server..."
+        is ChatClient.Status.Online -> ", online"
+        is ChatClient.Status.Failed -> ", offline: ${status.message.withoutServerName()}"
     }
     Row(
         Modifier.fillMaxWidth().background(MaterialTheme.colorScheme.surfaceVariant).padding(horizontal = 16.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        Text(
-            torText + chatText,
-            style = MaterialTheme.typography.labelMedium,
-            color = MaterialTheme.colorScheme.onSurfaceVariant,
-            modifier = Modifier.weight(1f),
-        )
+        Column(Modifier.weight(1f)) {
+            Text(
+                torText + chatText,
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+            )
+            // A first connection downloads the whole directory of the Tor network. Saying so stops people
+            // restarting a connection that is still working, which only makes it start from scratch.
+            if (tor is TorManager.State.Starting) {
+                Text(
+                    "The first connection on a new phone can take a minute.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
         if (status is ChatClient.Status.Failed) TextButton(onClick = onRetry) { Text("Retry") }
     }
 }

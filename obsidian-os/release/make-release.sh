@@ -1,6 +1,6 @@
 #!/bin/bash
-# Turns a finished Pixel 8 build into a release: the factory zip that both the browser installer and
-# the flashing scripts expect, its SHA-256, and the latest.json the browser installer reads.
+# Turns a finished Pixel build into a release: the factory zip that both the browser installer and
+# the flashing scripts expect, its SHA-256, and the latest-<device>.json the browser installer reads.
 #
 #   make-release.sh <version>        for example: make-release.sh 2026.09.21-test
 #
@@ -13,6 +13,12 @@ set -euo pipefail
 VERSION=${1:?"give a version, for example 2026.09.21-test"}
 DEVICE=${DEVICE:-shiba}
 KEYS=${KEYS:-test}
+# The name people know each phone by, used in the release name, the scripts and their messages.
+case "$DEVICE" in
+  shiba) MODEL="Pixel 8" ;;
+  tokay) MODEL="Pixel 9" ;;
+  *) echo "no model name known for $DEVICE: add it here first"; exit 1 ;;
+esac
 OUT=${OUT:-$HOME/os/out/target/product/$DEVICE}
 DEST=${DEST:-$HOME/releases}
 HERE=$(cd "$(dirname "$0")" && pwd)
@@ -42,7 +48,8 @@ cp "$OUT/radio.img" "$work/$NAME/$RADIO_FILE"
 cp "$IMG" "$work/$NAME/$IMAGE_FILE"
 fill() {
   sed -e "s|@BOOTLOADER@|$BL_FILE|g" -e "s|@RADIO@|$RADIO_FILE|g" \
-      -e "s|@IMAGE@|$IMAGE_FILE|g" -e "s|@VERSION@|$VERSION|g" "$1"
+      -e "s|@IMAGE@|$IMAGE_FILE|g" -e "s|@VERSION@|$VERSION|g" \
+      -e "s|@DEVICE@|$DEVICE|g" -e "s|@MODEL@|$MODEL|g" "$1"
 }
 fill "$HERE/flash-all.sh" > "$work/$NAME/flash-all.sh"
 fill "$HERE/flash-all.bat" > "$work/$NAME/flash-all.bat"
@@ -57,11 +64,13 @@ rm -f "$DEST/$NAME.zip"
 SIZE=$(stat -c %s "$DEST/$NAME.zip")
 SHA=$(sha256sum "$DEST/$NAME.zip" | cut -d' ' -f1)
 (cd "$DEST" && printf '%s  %s\n' "$SHA" "$NAME.zip" > "$NAME.zip.sha256")
-cat > "$DEST/latest.json" <<JSON
+# One index per phone: the browser installer asks the phone what it is, then reads latest-<device>.json.
+cat > "$DEST/latest-$DEVICE.json" <<JSON
 {
-  "name": "OBSIDIAN $VERSION for the Pixel 8",
+  "name": "OBSIDIAN $VERSION for the $MODEL",
   "version": "$VERSION",
   "device": "$DEVICE",
+  "model": "$MODEL",
   "keys": "$KEYS",
   "file": "releases/$NAME.zip",
   "size": $SIZE,

@@ -1,5 +1,5 @@
 #!/bin/sh
-# Installs OBSIDIAN on a Google Pixel 8 that is in bootloader mode, and erases everything on it.
+# Installs OBSIDIAN on a Google @MODEL@ that is in bootloader mode, and erases everything on it.
 #
 # Needs fastboot from Google's Android SDK Platform-Tools, on your PATH:
 #   https://developer.android.com/tools/releases/platform-tools
@@ -11,8 +11,8 @@ set -e
 cd "$(dirname "$0")"
 
 product=$(fastboot getvar product 2>&1 | sed -n 's/^product: *//p')
-if [ "$product" != "shiba" ]; then
-  echo "No Pixel 8 found in bootloader mode (found: ${product:-nothing}). Nothing was changed."
+if [ "$product" != "@DEVICE@" ]; then
+  echo "No @MODEL@ found in bootloader mode (found: ${product:-nothing}). Nothing was changed."
   exit 1
 fi
 

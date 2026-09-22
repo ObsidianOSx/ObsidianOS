@@ -1,4 +1,4 @@
-OBSIDIAN @VERSION@ for the Google Pixel 8
+OBSIDIAN @VERSION@ for the Google @MODEL@
 
 This is a test build. It is signed with test keys, so the bootloader stays unlocked and the phone
 shows a warning each time it starts. It is for evaluation, not yet for protecting anyone.

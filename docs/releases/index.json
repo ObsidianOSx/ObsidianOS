@@ -27,7 +27,13 @@
       "device": "panther",
       "model": "Pixel 7",
       "state": "Being built",
-      "note": "The Pixel 7 build is running now, and then it has to be installed on the phone like the others. It is the weakest of the three: its processor cannot tag memory, and Google's updates for it stop in October 2027."
+      "note": "The Pixel 7 build is running now, and then it has to be installed on the phone like the others. Its processor cannot tag memory, and Google's updates for it stop in October 2027."
+    },
+    {
+      "device": "oriole",
+      "model": "Pixel 6",
+      "state": "Being built",
+      "note": "The Pixel 6 build is queued behind the Pixel 7. Google's updates for this phone stop in October 2026, and it has no memory tagging, so it is for trying OBSIDIAN on a phone you already own rather than one to buy and rely on."
     }
   ]
 }

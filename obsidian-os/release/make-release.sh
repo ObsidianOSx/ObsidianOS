@@ -18,6 +18,7 @@ case "$DEVICE" in
   shiba) MODEL="Pixel 8" ;;
   tokay) MODEL="Pixel 9" ;;
   panther) MODEL="Pixel 7" ;;
+  oriole) MODEL="Pixel 6" ;;
   *) echo "no model name known for $DEVICE: add it here first"; exit 1 ;;
 esac
 OUT=${OUT:-$HOME/os/out/target/product/$DEVICE}

@@ -7,6 +7,21 @@ SMS, and location is switched off and locked.
 This repository contains everything that makes the phone OBSIDIAN: the chat app, the changes
 applied to the operating system, and the module the chat server uses.
 
+## Get it
+
+Test releases run on the Google Pixel 8, and installing one erases the phone.
+
+- [Install from your browser](https://obsidianos.org/web-install.html), in Chrome, Edge or Brave on
+  a computer. It finds the release for your phone, checks it and installs it.
+- [Downloads](https://obsidianos.org/downloads.html): every release with its size and SHA-256, for
+  installing from a computer or keeping a copy.
+- [How to install](https://obsidianos.org/install.html), step by step, including how to go back to
+  normal Android.
+
+Releases are signed with test keys for now, so the bootloader stays unlocked and the phone shows a
+warning each time it starts. Do not lock the bootloader: a phone locked to an operating system it
+cannot verify refuses to start.
+
 ## Screenshots
 
 <table>

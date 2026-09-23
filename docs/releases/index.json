@@ -20,7 +20,14 @@
     {
       "device": "tokay",
       "model": "Pixel 9",
+      "state": "In testing",
       "note": "The Pixel 9 build is finished, and the whole install has been proved step by step against a stand in for the phone. Nobody has installed it on a real Pixel 9 yet, so it is not offered here. It appears the day that test passes."
+    },
+    {
+      "device": "panther",
+      "model": "Pixel 7",
+      "state": "Being built",
+      "note": "The Pixel 7 build is running now, and then it has to be installed on the phone like the others. It is the weakest of the three: its processor cannot tag memory, and Google's updates for it stop in October 2027."
     }
   ]
 }

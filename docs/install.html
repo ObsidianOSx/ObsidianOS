@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Install OBSIDIAN</title>
-<meta name="description" content="How to install OBSIDIAN on a Google Pixel 8, what you need first, and how to go back to normal Android.">
+<meta name="description" content="How to install OBSIDIAN on a supported Google Pixel, what you need first, and how to go back to normal Android.">
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
@@ -22,7 +22,7 @@
     <a href="index.html#phone">The phone</a>
     <a href="index.html#messaging">Messaging</a>
     <a href="index.html#transparency">Transparency</a>
-    <a href="devices.html">Pixel 8</a>
+    <a href="devices.html">Phones</a>
     <a href="install.html">Install</a>
     <a href="downloads.html">Downloads</a>
     <a href="donate.html">Donate</a>
@@ -37,7 +37,7 @@
     <h1>Installing OBSIDIAN</h1>
     <p class="lede">
       Putting OBSIDIAN on a phone replaces the operating system it came with. Everything on the
-      phone is erased in the process. It runs on the Google Pixel 8 only, for now. Read this page
+      phone is erased in the process. It runs on the Google Pixel 8 today, and more Pixels are on the way. Read this page
       before starting.
     </p>
   </section>
@@ -45,7 +45,7 @@
   <section class="band">
     <h2>You put it on your own phone</h2>
     <p class="section-lede">
-      OBSIDIAN does not come on a phone. You buy a Pixel 8 and install it from your own computer.
+      OBSIDIAN does not come on a phone. You buy a supported Pixel and install it from your own computer.
       The easiest way is the browser installer: open it in Chrome, Edge or Brave, plug the phone in,
       and press each button in turn. The steps further down do the same thing from a command line.
       Either way it takes around half an hour, most of which is the phone working on its own.
@@ -59,7 +59,7 @@
     <h2>What you need</h2>
     <div class="cards three">
       <article class="card">
-        <h3>A Pixel 8</h3>
+        <h3>A supported Pixel</h3>
         <p>Bought unlocked rather than from a mobile network, since network branded phones often block the unlocking this requires. <a href="devices.html">Check your phone</a> before you start.</p>
       </article>
       <article class="card">
@@ -86,7 +86,7 @@
       </div>
       <div class="item">
         <h3>On Windows</h3>
-        <p>Windows 10 and 11 already include a driver that works with the Pixel 8 in bootloader mode. Older versions of Windows need Google's USB driver. If flashing stops when the phone shows its fastbootd screen, Windows has not attached a driver for that mode: in Device Manager, update the Pixel 8's driver to WinUsb Device, as the <a href="web-install.html">browser installer</a> page describes.</p>
+        <p>Windows 10 and 11 already include a driver that works with these phones in bootloader mode. Older versions of Windows need Google's USB driver. If flashing stops when the phone shows its fastbootd screen, Windows has not attached a driver for that mode: in Device Manager, update the phone's driver to WinUsb Device, as the <a href="web-install.html">browser installer</a> page describes.</p>
       </div>
       <div class="item">
         <h3>On Linux</h3>
@@ -145,7 +145,7 @@
         <p>Start the phone in bootloader mode as in step 2 above, and connect it.</p>
       </div></li>
       <li><span>3</span><div>
-        <h3>Choose the Pixel 8 factory image</h3>
+        <h3>Choose your phone in the list</h3>
         <p>Pick the latest factory image, let it wipe the phone, and choose to lock the bootloader at the end.</p>
       </div></li>
     </ol>
@@ -185,14 +185,16 @@
 
   <section class="band closing">
     <h2>Download</h2>
-    <p class="section-lede">
-      The current test release for the Pixel 8 is 2026.09.22-test2. It is signed with test keys, so it is for
-      trying OBSIDIAN out, not yet for protecting anyone. The browser installer downloads it and checks
-      it for you. To install from a command line instead, download it from GitHub, and check that its
-      SHA-256 matches this one before flashing.
-    </p>
-    <p class="code address">ce526c361c1d1f11a66049cb6aa85d2519447ac54df52bf522107bffa2ce403f</p>
-    <a class="button" href="https://github.com/ObsidianOSx/ObsidianOS/releases">Download from GitHub</a>
+      <p class="section-lede">
+        The <a href="downloads.html">downloads page</a> lists every release for every phone, each with
+        its date, size and SHA-256 to check before installing. The browser installer finds the newest
+        release for your phone and checks it for you, so this is for installing from a command line,
+        or for keeping a copy.
+      </p>
+      <p class="cta">
+        <a class="button" href="downloads.html">Downloads</a>
+        <a class="button quiet" href="web-install.html">Install from your browser</a>
+      </p>
   </section>
 
 </main>

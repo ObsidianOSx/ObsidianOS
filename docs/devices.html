@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OBSIDIAN on the Pixel 8</title>
-<meta name="description" content="OBSIDIAN runs on the Google Pixel 8. How to check you have the right phone, and why it was chosen.">
+<title>Phones OBSIDIAN runs on</title>
+<meta name="description" content="Which Google Pixels OBSIDIAN runs on, which are still being built or tested, and how to check you have the right phone.">
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
@@ -22,7 +22,7 @@
     <a href="index.html#phone">The phone</a>
     <a href="index.html#messaging">Messaging</a>
     <a href="index.html#transparency">Transparency</a>
-    <a href="devices.html">Pixel 8</a>
+    <a href="devices.html" aria-current="page">Phones</a>
     <a href="install.html">Install</a>
     <a href="downloads.html">Downloads</a>
     <a href="donate.html">Donate</a>
@@ -33,71 +33,121 @@
 <main id="main">
 
   <section class="hero compact">
-    <p class="badge">One phone, for now</p>
-    <h1>Built for the Pixel 8</h1>
+    <p class="badge">Supported phones</p>
+    <h1>Which phones it runs on</h1>
     <p class="lede">
-      OBSIDIAN runs on one phone: the Google Pixel 8. Not the Pixel 8 Pro, not the Pixel 8a, and not
-      phones from other makers. This page shows how to check you have the right one, and why we chose it.
+      OBSIDIAN is built for Google Pixel phones, one model at a time. A phone is only listed as ready
+      once the build has been installed on that phone and used. Everything else is named here as what
+      it is, being built or being tested, so you can see what is coming without being sold it early.
     </p>
   </section>
 
   <section class="band">
+    <h2>Where each phone stands</h2>
+    <p class="section-lede">
+      Today there is one phone you can install on. Two more are on the way.
+    </p>
+    <div class="matrix">
+      <div class="item">
+        <h3>Pixel 8 <span class="chip now">Ready</span></h3>
+        <p>Built, installed and used on the real phone. This is the phone to buy if you want OBSIDIAN
+        today. Google supports it with firmware and security updates until October 2030, and it has
+        memory tagging, which OBSIDIAN switches on.</p>
+      </div>
+      <div class="item">
+        <h3>Pixel 9 <span class="chip next">In testing</span></h3>
+        <p>The build is finished and the whole install has been proved step by step against a stand in
+        for the phone, but it has not yet been installed on a real Pixel 9. It will be offered the day
+        that test passes. Google supports it until August 2031, and it has memory tagging.</p>
+      </div>
+      <div class="item">
+        <h3>Pixel 7 <span class="chip next">Being built</span></h3>
+        <p>Being built now, and then it has to be tested on the phone like the others. Be aware it is
+        the weakest of the three: no memory tagging in its processor, and Google's updates stop in
+        October 2027, which is also when OBSIDIAN would stop being able to keep it fully secure.</p>
+      </div>
+    </div>
+    <p class="note">
+      Only the Pixel 8 can be installed at the moment. If a phone is not ready, the installer says so
+      and changes nothing on it.
+    </p>
+  </section>
+
+  <section class="band alt">
     <h2>Check your phone first</h2>
     <div class="cards three">
       <article class="card">
-        <h3>It is a Pixel 8</h3>
-        <p>Open Settings, then About phone. The model should read Pixel 8 with nothing after it. The Pixel 8 Pro and Pixel 8a look similar, but they are different phones inside and each needs its own build.</p>
+        <h3>It is the plain model</h3>
+        <p>Open Settings, then About phone. The model should read Pixel 8, Pixel 9 or Pixel 7 with
+        nothing after it. The Pro, a and Fold versions look similar but are different phones inside,
+        and each would need its own build and its own testing.</p>
       </article>
       <article class="card">
         <h3>It can be unlocked</h3>
-        <p>Connect it to Wi-Fi, then tap Build number seven times in About phone. In Settings, System, Developer options, the OEM unlocking switch has to turn on. If it stays grey once the phone has been online, it is locked to a mobile network and cannot take OBSIDIAN.</p>
+        <p>Connect it to Wi-Fi, then tap Build number seven times in About phone. In Settings, System,
+        Developer options, the OEM unlocking switch has to turn on. If it stays grey once the phone has
+        been online, it is locked to a mobile network and cannot take OBSIDIAN.</p>
       </article>
       <article class="card">
         <h3>Buying second hand</h3>
-        <p>Make sure the phone has been reset and removed from the previous owner's Google account, and ask to see OEM unlocking switch on before you pay. A phone still tied to someone else's account cannot get far enough into its settings to be unlocked.</p>
+        <p>Make sure the phone has been reset and removed from the previous owner's Google account, and
+        ask to see the OEM unlocking switch on before you pay. A phone still tied to someone else's
+        account cannot get far enough into its settings to be unlocked.</p>
       </article>
     </div>
   </section>
 
-  <section class="band alt">
-    <h2>Why the Pixel 8</h2>
+  <section class="band">
+    <h2>Why these phones</h2>
     <p class="section-lede">
       A private phone is only as strong as the hardware under it. These are the reasons, in plain terms.
     </p>
     <div class="matrix">
       <div class="item">
-        <h3>It can be locked with a key that is not Google's</h3>
-        <p>Most phones either refuse a different operating system or can never be locked again once one is installed. The Pixel 8 accepts another key, so after installing, the bootloader can be locked and the phone will refuse anything not signed with that key.</p>
+        <h3>They can be locked with a key that is not Google's</h3>
+        <p>Most phones either refuse a different operating system or can never be locked again once one
+        is installed. Pixels accept another key, so after installing, the bootloader can be locked and
+        the phone will refuse anything not signed with that key.</p>
       </div>
       <div class="item">
         <h3>A separate security chip</h3>
-        <p>The Titan M2 chip holds the keys that protect your data and limits how quickly a PIN can be guessed, so a stolen phone cannot be opened by trying every number in turn.</p>
+        <p>The Titan M2 chip holds the keys that protect your data and limits how quickly a PIN can be
+        guessed, so a stolen phone cannot be opened by trying every number in turn.</p>
       </div>
       <div class="item">
         <h3>Memory tagging in the processor</h3>
-        <p>The Pixel 8 generation was the first with processors that can tag memory, which stops a large family of attacks that work by corrupting it. OBSIDIAN has it switched on, for the operating system and for Obsidian Chat.</p>
+        <p>The Pixel 8 generation was the first with processors that can tag memory, which stops a large
+        family of attacks that work by corrupting it. OBSIDIAN has it switched on, for the operating
+        system and for Obsidian Chat. The Pixel 7 cannot do this, which is the main reason it is the
+        weaker choice.</p>
       </div>
       <div class="item">
         <h3>You can see what it started</h3>
-        <p>When a Pixel 8 runs an operating system other than Google's, it shows the full fingerprint of the key it started with. Once release keys exist we will publish ours, so you can compare the two and know the phone is running what we released.</p>
+        <p>When a Pixel runs an operating system other than Google's, it shows the full fingerprint of
+        the key it started with. Once release keys exist we will publish ours, so you can compare the
+        two and know the phone is running what we released.</p>
       </div>
       <div class="item">
-        <h3>Supported until October 2030</h3>
-        <p>Google provides firmware and security updates for the Pixel 8 until October 2030. OBSIDIAN depends on those, so that is also how long the phone can be kept fully secure.</p>
+        <h3>Updates for years, and a known end date</h3>
+        <p>Google provides firmware and security updates until October 2030 for the Pixel 8 and August
+        2031 for the Pixel 9. OBSIDIAN depends on those, so that is also how long each phone can be kept
+        fully secure. For the Pixel 7 that date is October 2027.</p>
       </div>
     </div>
   </section>
 
-  <section class="band">
+  <section class="band alt">
     <h2>Not supported</h2>
     <div class="matrix">
       <div class="item">
-        <h3>Pixel 8 Pro and Pixel 8a</h3>
-        <p>Close relatives with different hardware inside. Each needs its own build and its own testing, and neither has been done.</p>
+        <h3>Pro, a and Fold versions</h3>
+        <p>Close relatives with different hardware inside, such as the Pixel 8 Pro and the Pixel 8a.
+        Each needs its own build and its own testing, and none has been done.</p>
       </div>
       <div class="item">
         <h3>Other Pixel models</h3>
-        <p>More may follow. None will appear on this page until it has been built and tested on the real phone.</p>
+        <p>More may follow. None will appear as ready on this page until it has been built and used on
+        the real phone.</p>
       </div>
       <div class="item">
         <h3>Phones from other makers</h3>
@@ -107,11 +157,15 @@
   </section>
 
   <section class="band closing">
-    <h2>Have a Pixel 8?</h2>
+    <h2>Have one of these phones?</h2>
     <p class="section-lede">
-      The install page covers what you need, each step, and how to go back to normal Android if you change your mind.
+      The install page covers what you need, each step, and how to go back to normal Android if you
+      change your mind. The downloads page has every release with its checksum.
     </p>
-    <a class="button" href="install.html">How to install</a>
+    <p class="cta">
+      <a class="button" href="install.html">How to install</a>
+      <a class="button quiet" href="downloads.html">Downloads</a>
+    </p>
   </section>
 
 </main>

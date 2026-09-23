@@ -1,6 +1,6 @@
 // OBSIDIAN browser installer.
 //
-// Talks to a Pixel 8 in bootloader mode over WebUSB, using fastboot.js (MIT, served from this site
+// Talks to a supported Pixel in bootloader mode over WebUSB, using fastboot.js (MIT, served from this site
 // with two small changes described at the top of fastboot.mjs). It downloads the release from this
 // same site, checks it against the published SHA-256 while it arrives, and then flashes it the way
 // AOSP's own fastboot-info.txt describes. Nothing is sent anywhere, and nothing is loaded from any
@@ -49,7 +49,7 @@ function explain(error) {
   const name = error?.name || "";
   const message = error?.message || String(error);
   if (name === "NotFoundError") {
-    return "No phone was chosen. Press the button again and pick the Pixel 8 from the list.";
+    return "No phone was chosen. Press the button again and pick your phone from the list.";
   }
   if (name === "SecurityError" || /access denied|claim|unable to open/i.test(message)) {
     return "The computer would not let this page use the phone. Close any other program that might be using it, " +

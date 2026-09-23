@@ -21,7 +21,7 @@ NAV = """<header class="top">
     <a href="index.html#phone">The phone</a>
     <a href="index.html#messaging">Messaging</a>
     <a href="index.html#transparency">Transparency</a>
-    <a href="devices.html">Pixel 8</a>
+    <a href="devices.html">Phones</a>
     <a href="install.html">Install</a>
     <a href="downloads.html" aria-current="page">Downloads</a>
     <a href="donate.html">Donate</a>
@@ -75,20 +75,22 @@ def device_section(dev, alt):
 
 
 def pending_section(pending):
-    """Builds that exist but have not been proven on the real phone, named rather than hidden."""
+    """Phones on the way, named rather than hidden, each with how far along it is."""
     if not pending:
         return ""
     items = "\n".join("""      <div class="item">
-        <h3>{model} <span class="chip next">In testing</span></h3>
+        <h3>{model} <span class="chip next">{state}</span></h3>
         <p>{note}</p>
-      </div>""".format(model=p["model"], note=p["note"]) for p in pending)
+      </div>""".format(model=p["model"], state=p.get("state", "In testing"), note=p["note"])
+                      for p in pending)
     return """
 
   <section class="band">
-    <h2>Built, not yet published</h2>
+    <h2>Not published yet</h2>
     <p class="section-lede">
-      A build does not appear above until it has been installed on the real phone and checked. These
-      are the ones waiting for that.
+      A phone does not appear above until OBSIDIAN has been built for it and then installed on that
+      phone and used. These are the ones on the way. The <a href="devices.html">phones page</a> has the
+      detail on each.
     </p>
     <div class="matrix">
 {items}

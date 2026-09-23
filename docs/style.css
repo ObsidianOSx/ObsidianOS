@@ -270,3 +270,10 @@ button.button.quiet:disabled:hover { background: transparent; border-color: var(
 .installer progress::-webkit-progress-bar { background: var(--line); border-radius: 999px; }
 .installer progress::-webkit-progress-value { background: var(--accent); border-radius: 999px; }
 .installer progress::-moz-progress-bar { background: var(--accent); border-radius: 999px; }
+
+/* Downloads. A release is a name, a date, a size and a checksum, so the checksum has to be readable
+   in full: it wraps rather than scrolls, and selects whole in one tap for pasting into a terminal. */
+.card .meta { margin: 0 0 10px; color: var(--muted); font-size: 14.5px; }
+.card .sha { word-break: break-all; user-select: all; font-size: 13px; line-height: 1.5; }
+.card .row { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }
+.card .row .button { padding: 9px 18px; font-size: 14.5px; }

@@ -12,8 +12,10 @@
 import * as fastboot from "./fastboot.mjs";
 import { Sha256 } from "./sha256.mjs";
 
-const RELEASE_INFO = "releases/latest.json";
-const SUPPORTED_PRODUCT = "shiba"; // how the Pixel 8's bootloader names itself
+// Each supported phone has its own release index, named by the codename its bootloader reports
+// (shiba is the Pixel 8, tokay the Pixel 9). A phone is supported exactly when its index exists, so
+// adding a phone means publishing its release, with no change here.
+const releaseInfo = (product) => `releases/latest-${product}.json`;
 const BLOB_PART = 64 * 1024 * 1024; // hand the download to the browser's storage in pieces this size
 
 const device = new fastboot.FastbootDevice();
@@ -38,7 +40,7 @@ function say(id, text, kind = "") {
 function setButtons() {
   el("connect").disabled = busy || !supported;
   el("unlock").disabled = busy || !connected || unlocked;
-  el("download").disabled = busy || !release || image !== null;
+  el("download").disabled = busy || !connected || !release || image !== null;
   el("install").disabled = busy || !connected || !unlocked || image === null;
 }
 
@@ -90,32 +92,39 @@ function checkSupport() {
   }
 }
 
-async function loadRelease() {
-  try {
-    const response = await fetch(RELEASE_INFO, { cache: "no-store" });
-    if (!response.ok) throw new Error(String(response.status));
-    release = await response.json();
-    say("download-status", `${release.name}, ${gb(release.size)}. Not downloaded yet.`);
-  } catch {
-    say("download-status", "There is no release to download yet.", "warn");
-  }
+// The release made for this phone, or null when there is none.
+async function loadRelease(product) {
+  const response = await fetch(releaseInfo(product), { cache: "no-store" });
+  if (response.status === 404) return null;
+  if (!response.ok) throw new Error(`Could not check for a release for this phone (${response.status}). Try again.`);
+  const info = await response.json();
+  if (info.device !== product) throw new Error("The release found is not for this phone, so it will not be used.");
+  return info;
 }
 
 async function connect() {
   say("connect-status", "Choose the phone in the box your browser shows. It may be listed by its serial number.");
   await device.connect();
   const product = await device.getVariable("product");
-  if (product !== SUPPORTED_PRODUCT) {
+  const info = await loadRelease(product);
+  if (!info) {
     connected = false;
-    say("connect-status", `This phone calls itself "${product}". OBSIDIAN only runs on the Pixel 8, whose bootloader ` +
-      `calls itself ${SUPPORTED_PRODUCT}. Nothing has been changed on it.`, "bad");
+    say("connect-status", `This phone calls itself "${product}", and OBSIDIAN has no release for it. The supported ` +
+      "phones page lists the ones it runs on. Nothing has been changed on this phone.", "bad");
     return;
   }
+  // A download made for a different phone is no use to this one.
+  if (image && release && release.device !== info.device) {
+    image = null;
+    el("download-bar").hidden = true;
+  }
+  release = info;
   connected = true;
   unlocked = (await device.getVariable("unlocked")) === "yes";
-  say("connect-status", "Connected to a Pixel 8.", "ok");
+  say("connect-status", `Connected to a ${release.model}.`, "ok");
   say("unlock-status", unlocked ? "Already unlocked. Go on to the next step." : "Locked. Unlock it to continue.",
     unlocked ? "ok" : "");
+  if (!image) say("download-status", `${release.name}, ${gb(release.size)}. Not downloaded yet.`);
 }
 
 async function unlock() {
@@ -242,6 +251,5 @@ el("install").addEventListener("click", () => run("install-status", install));
 el("reconnect").addEventListener("click", reconnect); // must work while install is running
 
 checkSupport();
-setButtons();
-await loadRelease();
+say("download-status", "Connect the phone first. This page then finds the release made for it.");
 setButtons();

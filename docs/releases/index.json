@@ -1,0 +1,26 @@
+{
+  "devices": [
+    {
+      "device": "shiba",
+      "model": "Pixel 8",
+      "note": "The Pixel 8 is the phone OBSIDIAN is built and tested on. Nothing here fits the Pixel 8 Pro or the Pixel 8a.",
+      "releases": [
+        {
+          "version": "2026.09.22-test2",
+          "date": "2026-09-22",
+          "keys": "test",
+          "file": "releases/obsidian-shiba-2026.09.22-test2.zip",
+          "size": 1972994584,
+          "sha256": "ce526c361c1d1f11a66049cb6aa85d2519447ac54df52bf522107bffa2ce403f"
+        }
+      ]
+    }
+  ],
+  "pending": [
+    {
+      "device": "tokay",
+      "model": "Pixel 9",
+      "note": "The Pixel 9 build is finished, and the whole install has been proved step by step against a stand in for the phone. Nobody has installed it on a real Pixel 9 yet, so it is not offered here. It appears the day that test passes."
+    }
+  ]
+}

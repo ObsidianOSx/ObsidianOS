@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Download OBSIDIAN</title>
+<meta name="description" content="Every OBSIDIAN release, with its date, size and SHA-256 checksum. Older releases are kept for good.">
+<meta name="color-scheme" content="dark">
+<link rel="stylesheet" href="style.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
+</head>
+<body>
+
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="top">
+  <a class="brand" href="index.html" aria-label="OBSIDIAN home">
+    <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="8" ry="10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
+    <span>OBSIDIAN</span>
+  </a>
+  <nav aria-label="Primary">
+    <a href="index.html#phone">The phone</a>
+    <a href="index.html#messaging">Messaging</a>
+    <a href="index.html#transparency">Transparency</a>
+    <a href="devices.html">Pixel 8</a>
+    <a href="install.html">Install</a>
+    <a href="downloads.html" aria-current="page">Downloads</a>
+    <a href="donate.html">Donate</a>
+    <a class="ghost" href="https://github.com/ObsidianOSx/ObsidianOS">Source</a>
+  </nav>
+</header>
+
+<main id="main">
+
+  <section class="hero compact">
+    <p class="badge">Every release</p>
+    <h1>Downloads</h1>
+    <p class="lede">
+      Every OBSIDIAN release is kept here, and older ones are never taken away. The browser installer
+      finds the newest release for your phone by itself, so this page is for anyone who would rather
+      have the file: to install from a computer, to check it before installing, or to keep a copy.
+    </p>
+    <p class="cta">
+      <a class="button" href="web-install.html">Install from your browser instead</a>
+      <a class="button quiet" href="install.html">How to install</a>
+    </p>
+  </section>
+
+  <section class="band" id="shiba">
+    <h2>Google Pixel 8</h2>
+    <p class="section-lede">The Pixel 8 is the phone OBSIDIAN is built and tested on. Nothing here fits the Pixel 8 Pro or the Pixel 8a.</p>
+    <div class="cards two">
+      <article class="card">
+        <h3>2026.09.22-test2 <span class="chip now">Newest</span></h3>
+        <p class="meta">Released 2026-09-22. 1.97 GB (1,972,994,584 bytes). Signed with test keys, so the bootloader stays unlocked.</p>
+        <p class="code sha">SHA-256 ce526c361c1d1f11a66049cb6aa85d2519447ac54df52bf522107bffa2ce403f</p>
+        <p class="row">
+          <a class="button" href="releases/obsidian-shiba-2026.09.22-test2.zip">Download the zip</a>
+          <a class="button quiet" href="releases/obsidian-shiba-2026.09.22-test2.zip.sha256">Checksum file</a>
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section class="band">
+    <h2>Built, not yet published</h2>
+    <p class="section-lede">
+      A build does not appear above until it has been installed on the real phone and checked. These
+      are the ones waiting for that.
+    </p>
+    <div class="matrix">
+      <div class="item">
+        <h3>Pixel 9 <span class="chip next">In testing</span></h3>
+        <p>The Pixel 9 build is finished, and the whole install has been proved step by step against a stand in for the phone. Nobody has installed it on a real Pixel 9 yet, so it is not offered here. It appears the day that test passes.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt">
+    <h2>Check what you downloaded</h2>
+    <p class="section-lede">
+      Every release has its SHA-256 published above. Work the same number out on your own computer and
+      compare the two, character for character. If they differ, delete the file and download it again.
+      Do not install it. Put the name of the file you downloaded where FILENAME is.
+    </p>
+    <div class="cards three">
+      <article class="card">
+        <h3>Windows</h3>
+        <p>In Command Prompt, in the folder you downloaded to:</p>
+        <p class="code">certutil -hashfile FILENAME.zip SHA256</p>
+      </article>
+      <article class="card">
+        <h3>macOS</h3>
+        <p>In Terminal:</p>
+        <p class="code">shasum -a 256 FILENAME.zip</p>
+      </article>
+      <article class="card">
+        <h3>Linux</h3>
+        <p>In a terminal:</p>
+        <p class="code">sha256sum FILENAME.zip</p>
+      </article>
+    </div>
+  </section>
+
+  <section class="band">
+    <h2>What is inside</h2>
+    <p class="section-lede">
+      The zip holds the whole operating system and the firmware that belongs with it, laid out the way
+      Google's own factory images are, plus two scripts that install it for you.
+    </p>
+    <div class="matrix">
+      <div class="item">
+        <h3>flash-all.bat and flash-all.sh</h3>
+        <p>Run the first on Windows, the second on macOS or Linux. Each checks it is talking to the
+        right phone, then installs everything in the right order. You need Google's platform tools and
+        an unlocked bootloader first, and the install page covers both.</p>
+      </div>
+      <div class="item">
+        <h3>bootloader and radio images</h3>
+        <p>The phone's own firmware, at the versions this build expects. They go on before the system,
+        because a mismatch makes the phone refuse the rest halfway through.</p>
+      </div>
+      <div class="item">
+        <h3>image zip</h3>
+        <p>OBSIDIAN itself: the system, the three apps and the settings that cannot be changed.</p>
+      </div>
+      <div class="item">
+        <h3>README.txt</h3>
+        <p>The short version of the install steps, so the file still makes sense on its own long after
+        you downloaded it.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="band alt closing">
+    <h2>These are test builds</h2>
+    <p class="section-lede">
+      Every release here is signed with test keys. The phone starts and everything works, but it shows
+      a warning each time it starts and the bootloader has to stay unlocked, so this is for trying
+      OBSIDIAN out rather than for protecting anyone yet. Do not lock the bootloader after installing
+      one: a phone locked to an operating system it cannot verify refuses to start.
+    </p>
+    <p class="cta"><a class="button" href="web-install.html">Install from your browser</a></p>
+  </section>
+
+</main>
+
+<footer>
+  <p>OBSIDIAN, open source under GPL-3.0</p>
+  <p class="fineprint">This page loads no fonts, scripts, analytics or cookies from anywhere. Nothing here counts your visit.</p>
+</footer>
+
+</body>
+</html>

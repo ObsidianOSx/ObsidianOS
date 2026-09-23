@@ -1,15 +1,26 @@
 # OBSIDIAN
 
-A privacy-first Android phone. It does three things: encrypted chat, private browsing over Tor,
-and a camera. It is built to reveal and keep as little as possible. There is no phone dialler, no
-SMS, and location is switched off and locked.
+A free, open source Android system for Google Pixel phones, stripped back to what private
+communication actually needs and nothing else. There are three apps on it: a chat app, Tor Browser
+and a camera. That is the whole phone.
+
+Obsidian Chat works over Tor, so messages do not touch the normal internet on their way out. They
+are end to end encrypted, and new ones arrive sealed until you tap them open. You pick a username,
+not a phone number, and there is nothing to recover if you lose it, because nothing about you is
+kept to recover. The app has its own PIN on top of the screen lock, and an emergency wipe that
+returns the phone to factory settings in three seconds.
+
+What is not there matters as much: no dialler, no text messages, no app store and no side loading.
+Location is switched off and the switch is taken away, and a screen lock is required before the
+chat app will open at all.
 
 This repository contains everything that makes the phone OBSIDIAN: the chat app, the changes
 applied to the operating system, and the module the chat server uses.
 
 ## Get it
 
-Test releases run on the Google Pixel 8, and installing one erases the phone.
+Test releases run on the Google Pixel 8 today, with the Pixel 9, 7 and 6 on the way. Installing one
+erases the phone.
 
 - [Install from your browser](https://obsidianos.org/web-install.html), in Chrome, Edge or Brave on
   a computer. It finds the release for your phone, checks it and installs it.

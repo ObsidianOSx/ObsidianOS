@@ -18,6 +18,7 @@ NAV = """<header class="top">
     <span>OBSIDIAN</span>
   </a>
   <nav aria-label="Primary">
+    <a href="about.html">About</a>
     <a href="index.html#phone">The phone</a>
     <a href="index.html#messaging">Messaging</a>
     <a href="index.html#transparency">Transparency</a>

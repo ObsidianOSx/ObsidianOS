@@ -347,3 +347,5 @@ button.button.quiet:disabled:hover { background: transparent; border-color: var(
   .hero.split .cta { justify-content: center; }
   .checklist li { flex-direction: column; gap: 8px; }
 }
+/* A build anyone can install that has not yet been run on that phone in the real world. */
+.chip.trial { color: #b9a6ff; border-color: #4a3f77; background: rgba(185, 166, 255, 0.10); }

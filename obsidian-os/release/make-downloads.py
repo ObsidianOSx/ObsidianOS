@@ -89,9 +89,9 @@ def pending_section(pending):
   <section class="band">
     <h2>Not published yet</h2>
     <p class="section-lede">
-      A phone does not appear above until OBSIDIAN has been built for it and then installed on that
-      phone and used. These are the ones on the way. The <a href="devices.html">phones page</a> has the
-      detail on each.
+      A phone appears above as soon as its build is finished and its install has been checked. These
+      are the ones still being built. The <a href="devices.html">phones page</a> says where each one
+      stands.
     </p>
     <div class="matrix">
 {items}

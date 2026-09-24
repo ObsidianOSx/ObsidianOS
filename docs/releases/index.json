@@ -3,7 +3,7 @@
     {
       "device": "shiba",
       "model": "Pixel 8",
-      "note": "The Pixel 8 is the phone OBSIDIAN is built and tested on. Nothing here fits the Pixel 8 Pro or the Pixel 8a.",
+      "note": "The phone OBSIDIAN is built and tested on. This release has been installed on a real Pixel 8 and used. Nothing here fits the Pixel 8 Pro or the Pixel 8a.",
       "releases": [
         {
           "version": "2026.09.22-test2",
@@ -14,26 +14,44 @@
           "sha256": "ce526c361c1d1f11a66049cb6aa85d2519447ac54df52bf522107bffa2ce403f"
         }
       ]
-    }
-  ],
-  "pending": [
+    },
     {
       "device": "tokay",
       "model": "Pixel 9",
-      "state": "In testing",
-      "note": "The Pixel 9 build is finished, and the whole install has been proved step by step against a stand in for the phone. Nobody has installed it on a real Pixel 9 yet, so it is not offered here. It appears the day that test passes."
+      "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 9. It is here to be tested. Not the Pixel 9 Pro, Pro XL or Pro Fold.",
+      "releases": [
+        {
+          "version": "2026.09.22-test",
+          "date": "2026-09-22",
+          "keys": "test",
+          "file": "releases/obsidian-tokay-2026.09.22-test.zip",
+          "size": 2165406752,
+          "sha256": "e6ad9d45e2c72b0fa0f09b470131d947cebdf1eb83b46a5d715c0b0d31f5398d"
+        }
+      ]
     },
     {
       "device": "panther",
       "model": "Pixel 7",
-      "state": "Being built",
-      "note": "The Pixel 7 build is running now, and then it has to be installed on the phone like the others. Its processor cannot tag memory, and Google's updates for it stop in October 2027."
-    },
+      "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 7. It is here to be tested. This phone has no memory tagging, and Google's updates for it stop in October 2027. Not the Pixel 7 Pro or the Pixel 7a.",
+      "releases": [
+        {
+          "version": "2026.09.24-test",
+          "date": "2026-09-24",
+          "keys": "test",
+          "file": "releases/obsidian-panther-2026.09.24-test.zip",
+          "size": 1884981059,
+          "sha256": "fea8c129cd50657472347034061b2125c2615396f4228f346b64bab94625e86d"
+        }
+      ]
+    }
+  ],
+  "pending": [
     {
       "device": "oriole",
       "model": "Pixel 6",
       "state": "Being built",
-      "note": "The Pixel 6 build is queued behind the Pixel 7. Google's updates for this phone stop in October 2026, and it has no memory tagging, so it is for trying OBSIDIAN on a phone you already own rather than one to buy and rely on."
+      "note": "The Pixel 6 build is running now and will be published here when it finishes. Google's updates for this phone stop in October 2026, and it has no memory tagging, so it is for trying OBSIDIAN on a phone you already own rather than one to buy and rely on."
     }
   ]
 }

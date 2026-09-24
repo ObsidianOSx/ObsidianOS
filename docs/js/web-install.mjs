@@ -44,6 +44,22 @@ function setButtons() {
   el("install").disabled = busy || !connected || !unlocked || image === null;
 }
 
+// Windows binds a driver to the phone in bootloader mode by itself, but often not when the phone
+// switches to its fastbootd screen partway through, and the connection then disappears. It is the
+// most common way an install stops on Windows, so say so where it happens rather than only in the
+// help further down the page.
+const WINDOWS = /win/i.test(navigator.userAgentData?.platform || navigator.platform || "");
+const DRIVER_HELP = " On Windows this is usually the missing driver for the phone's fastbootd screen. " +
+  "Follow the steps below, under the heading On Windows it stops at the fastbootd screen, then press Reconnect.";
+let shownDriverHelp = false;
+
+// Send someone to the fix the first time they need it, rather than making them hunt for it.
+function showDriverHelp() {
+  if (shownDriverHelp) return;
+  shownDriverHelp = true;
+  document.getElementById("windows-driver")?.scrollIntoView({ block: "center", behavior: "smooth" });
+}
+
 // Turn what WebUSB and the bootloader throw into something a person can act on.
 function explain(error) {
   const name = error?.name || "";
@@ -56,7 +72,9 @@ function explain(error) {
       "such as fastboot in a terminal or Android Studio, unplug the phone, plug it back in and try again.";
   }
   if (name === "NetworkError" || /disconnect|transfer|device unavailable/i.test(message)) {
-    return "The connection to the phone dropped. Check the cable goes straight into the computer, not a hub, then connect again.";
+    if (WINDOWS) showDriverHelp();
+    return "The connection to the phone dropped. Check the cable goes straight into the computer, not a hub, then connect again." +
+      (WINDOWS ? DRIVER_HELP : "");
   }
   if (error instanceof fastboot.FastbootError) {
     return `The phone refused: ${message}`;
@@ -189,8 +207,9 @@ async function download() {
 
 function askToReconnect() {
   el("reconnect").hidden = false;
+  if (WINDOWS) showDriverHelp();
   say("install-status", "The browser lost touch with the phone while it restarted. Check the cable is plugged in firmly, " +
-    "then press Reconnect and choose the phone.", "warn");
+    "then press Reconnect and choose the phone." + (WINDOWS ? DRIVER_HELP : ""), "warn");
 }
 
 async function reconnect() {

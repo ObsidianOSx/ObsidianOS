@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OBSIDIAN: a phone that keeps your business yours</title>
-<meta name="description" content="A privacy-first Android phone. Encrypted chat over Tor, private browsing, a camera. No calls, no location, no tracking. Open source.">
+<title>OBSIDIAN</title>
+<meta name="description" content="A privacy-first Android phone with three apps: encrypted chat over Tor, private browsing and a camera. Free and open source, for Google Pixel phones.">
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
@@ -14,7 +14,7 @@
 <a class="skip" href="#main">Skip to content</a>
 
 <header class="top">
-  <a class="brand" href="#main" aria-label="OBSIDIAN home">
+  <a class="brand" href="index.html" aria-label="OBSIDIAN home">
     <svg class="mark" viewBox="0 0 32 32" aria-hidden="true"><ellipse cx="16" cy="16" rx="8" ry="10" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>
     <span>OBSIDIAN</span>
   </a>
@@ -22,12 +22,10 @@
     <a href="about.html">About</a>
     <a href="#phone">The phone</a>
     <a href="#messaging">Messaging</a>
-    <a href="#server">The server</a>
     <a href="#transparency">Transparency</a>
     <a href="devices.html">Phones</a>
     <a href="install.html">Install</a>
     <a href="downloads.html">Downloads</a>
-    <a href="#questions">Questions</a>
     <a href="donate.html">Donate</a>
     <a class="ghost" href="https://github.com/ObsidianOSx/ObsidianOS">Source</a>
   </nav>
@@ -35,30 +33,48 @@
 
 <main id="main">
 
-  <section class="hero">
-    <p class="badge">Early development, test builds only</p>
-    <h1>A phone that keeps<br>your business yours.</h1>
-    <p class="lede">
-      Three apps. Everything encrypted. Nothing to sell.
-      OBSIDIAN is an Android phone stripped back to what private communication actually needs, and built so that even the people running it cannot read your messages.
-    </p>
-    <div class="cta">
-      <a class="button" href="#phone">See what it does</a>
-      <a class="button quiet" href="https://github.com/ObsidianOSx/ObsidianOS">Read the source</a>
+  <section class="hero split">
+    <div class="hero-text">
+      <p class="badge">Early development, test builds only</p>
+      <h1>A phone that keeps your business yours.</h1>
+      <p class="lede">
+        Three apps. Everything encrypted. Nothing to sell. An Android system stripped back to what
+        private communication actually needs, built so that even the people running it cannot read
+        your messages.
+      </p>
+      <div class="cta">
+        <a class="button" href="web-install.html">Install from your browser</a>
+        <a class="button quiet" href="about.html">What it is</a>
+      </div>
+      <p class="fineprint">
+        Free and open source. Runs on the Google Pixel 8, with the Pixel 9, 7 and 6 on the way.
+        No phone number. No account recovery. No analytics anywhere, including on this page.
+      </p>
     </div>
-    <p class="fineprint">Runs on the Google Pixel 8, with the Pixel 9, 7 and 6 on the way. No phone number required. No account recovery. No analytics anywhere, including on this page.</p>
+    <div class="hero-device">
+      <div class="device">
+        <img src="screenshots/home.png" alt="The OBSIDIAN home screen, showing only Tor Browser, Obsidian Chat and Camera" width="540" height="1200">
+      </div>
+    </div>
+  </section>
+
+  <section class="strip" aria-label="What has been removed">
+    <ul class="strike">
+      <li>No dialler</li><li>No text messages</li><li>No location</li><li>No app store</li>
+      <li>No Google account</li><li>No side loading</li>
+    </ul>
   </section>
 
   <section id="phone" class="band">
     <h2>Three apps. That is the whole phone.</h2>
     <p class="section-lede">
-      Every app that could leak something has been taken out of the operating system: not hidden,
-      not disabled, removed from the image.
+      Every app that could leak something has been taken out of the system: not hidden, not disabled,
+      removed from the image.
     </p>
     <div class="cards three">
       <article class="card">
         <h3>Encrypted chat</h3>
-        <p>Messages travel over Tor and are end-to-end encrypted with the Signal protocol. Contacts are added by username, so there are no phone numbers and no email.</p>
+        <p>Messages travel over Tor and are end-to-end encrypted. Contacts are added by username, so there are no phone numbers and no email.</p>
       </article>
       <article class="card">
         <h3>Private browsing</h3>
@@ -69,20 +85,28 @@
         <p>Photos stay on the phone. When you send one, its location and camera details are stripped off first.</p>
       </article>
     </div>
-    <ul class="strike">
-      <li>No dialler</li><li>No text messages</li><li>No location</li><li>No app store</li>
-      <li>No Google account</li><li>No side-loading</li>
-    </ul>
   </section>
 
   <section id="messaging" class="band alt">
-    <h2>How a message travels</h2>
-    <ol class="steps">
-      <li><span>1</span><div><h3>Encrypted on your phone</h3><p>Before anything leaves, the message is sealed to your contact's device keys. Only their phone holds the key that opens it.</p></div></li>
-      <li><span>2</span><div><h3>Sent through Tor</h3><p>The app talks to nothing directly. Even the name lookup goes through Tor, so the server never learns where you are.</p></div></li>
-      <li><span>3</span><div><h3>Passed on, unread</h3><p>The server moves an encrypted blob between two accounts. It keeps no archive of what it moved.</p></div></li>
-      <li><span>4</span><div><h3>Opened by hand</h3><p>Messages arrive sealed. Your contact taps to open, so nothing sensitive sits on screen when the phone is picked up.</p></div></li>
-    </ol>
+    <div class="pair">
+      <div class="pair-text">
+        <h2>How a message travels</h2>
+        <p class="section-lede">
+          Four steps, and the server is only ever the third one.
+        </p>
+        <ol class="steps tight">
+          <li><span>1</span><div><h3>Encrypted on your phone</h3><p>Before anything leaves, the message is sealed to your contact's device keys. Only their phone holds the key that opens it.</p></div></li>
+          <li><span>2</span><div><h3>Sent through Tor</h3><p>The app talks to nothing directly. Even the name lookup goes through Tor, so the server never learns where you are.</p></div></li>
+          <li><span>3</span><div><h3>Passed on, unread</h3><p>The server moves an encrypted blob between two accounts. It keeps no archive of what it moved.</p></div></li>
+          <li><span>4</span><div><h3>Opened by hand</h3><p>Messages arrive sealed. Your contact taps to open, so nothing sensitive sits on screen when the phone is picked up.</p></div></li>
+        </ol>
+      </div>
+      <div class="pair-device">
+        <div class="device small">
+          <img src="screenshots/sealed-message.png" alt="A sealed message waiting to be opened" loading="lazy" width="540" height="1200">
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="band">
@@ -111,12 +135,10 @@
     <h2>What it looks like</h2>
     <p class="section-lede">Screens from the current build.</p>
     <div class="shots">
-      <figure><img src="screenshots/home.png" alt="Home screen showing only Tor Browser, Obsidian Chat and Camera" loading="lazy" width="540" height="1200"><figcaption>Three apps, nothing else</figcaption></figure>
-      <figure><img src="screenshots/chats.png" alt="Chat list showing one new sealed message" loading="lazy" width="540" height="1200"><figcaption>Messages arrive sealed</figcaption></figure>
-      <figure><img src="screenshots/conversation.png" alt="A conversation encrypted end to end over Tor" loading="lazy" width="540" height="1200"><figcaption>End-to-end encrypted</figcaption></figure>
-      <figure><img src="screenshots/security.png" alt="Security status screen listing Tor, encryption, contacts, location and storage" loading="lazy" width="540" height="1200"><figcaption>Plain-English status</figcaption></figure>
-      <figure><img src="screenshots/identity.png" alt="Identity screen with a PGP fingerprint and QR code" loading="lazy" width="540" height="1200"><figcaption>Verify in person</figcaption></figure>
-      <figure><img src="screenshots/lock.png" alt="The app's PIN lock screen" loading="lazy" width="540" height="1200"><figcaption>Locks behind you</figcaption></figure>
+      <figure><div class="device"><img src="screenshots/chats.png" alt="Chat list showing one new sealed message" loading="lazy" width="540" height="1200"></div><figcaption>Messages arrive sealed</figcaption></figure>
+      <figure><div class="device"><img src="screenshots/conversation.png" alt="A conversation encrypted end to end over Tor" loading="lazy" width="540" height="1200"></div><figcaption>End to end encrypted</figcaption></figure>
+      <figure><div class="device"><img src="screenshots/security.png" alt="Security status screen listing Tor, encryption, contacts, location and storage" loading="lazy" width="540" height="1200"></div><figcaption>Status in plain English</figcaption></figure>
+      <figure><div class="device"><img src="screenshots/identity.png" alt="Identity screen with a PGP fingerprint and QR code" loading="lazy" width="540" height="1200"></div><figcaption>Verify in person</figcaption></figure>
     </div>
   </section>
 
@@ -145,49 +167,24 @@
     </div>
   </section>
 
-  <section id="transparency" class="band">
+  <section id="transparency" class="band alt">
     <h2>How OBSIDIAN earns trust</h2>
     <p class="section-lede">
       A privacy claim is worth exactly what someone else can verify. This is where each part stands
-      today, and what the first release has to include. Nothing here is marked done until it is.
+      today. Nothing is marked done until it is.
     </p>
-    <div class="matrix">
-      <div class="item">
-        <h3>Open source <span class="chip now">In place</span></h3>
-        <p>Every line of the app, the operating system changes and the server module is public under the GPL-3.0 licence.</p>
-      </div>
-      <div class="item">
-        <h3>Public security development <span class="chip now">In place</span></h3>
-        <p>The work happens in the open, so fixes and mistakes are both visible as they are made.</p>
-      </div>
-      <div class="item">
-        <h3>Reproducible builds <span class="chip next">Planned</span></h3>
-        <p>You will be able to rebuild the phone image from this source and get byte for byte the same result, so nobody has to believe our copy is honest.</p>
-      </div>
-      <div class="item">
-        <h3>Independently verifiable releases <span class="chip now">In place</span></h3>
-        <p>Every release publishes its SHA-256, and the browser installer will not use a download that does not match it.</p>
-      </div>
-      <div class="item">
-        <h3>Signed updates <span class="chip next">Planned</span></h3>
-        <p>Updates will be signed with release keys generated and kept offline, so a phone accepts nothing that did not come from us.</p>
-      </div>
-      <div class="item">
-        <h3>Locked bootloader <span class="chip next">Planned</span></h3>
-        <p>Once release keys exist, the bootloader locks, so modified software cannot be flashed onto the phone. Test builds today leave it unlocked, and say so on this page.</p>
-      </div>
-      <div class="item">
-        <h3>Verified Boot <span class="chip next">Planned</span></h3>
-        <p>The phone will check its own system on every start and refuse to boot if anything has been altered.</p>
-      </div>
-      <div class="item">
-        <h3>Hardware-backed keys and attestation <span class="chip next">Planned</span></h3>
-        <p>Keys sealed by the phone secure hardware, and a way for a phone to prove to you that it is running the real, unmodified OBSIDIAN.</p>
-      </div>
-    </div>
+    <ul class="checklist">
+      <li><span class="chip now">In place</span><div><h3>Open source</h3><p>Every line of the app, the system changes and the server module is public under GPL-3.0.</p></div></li>
+      <li><span class="chip now">In place</span><div><h3>Public security development</h3><p>The work happens in the open, so fixes and mistakes are both visible as they are made.</p></div></li>
+      <li><span class="chip now">In place</span><div><h3>Independently verifiable releases</h3><p>Every release publishes its SHA-256, and the browser installer will not use a download that does not match it.</p></div></li>
+      <li><span class="chip next">Planned</span><div><h3>Reproducible builds</h3><p>You will be able to rebuild the phone image from this source and get byte for byte the same result, so nobody has to believe our copy is honest.</p></div></li>
+      <li><span class="chip next">Planned</span><div><h3>Signed updates</h3><p>Updates will be signed with release keys generated and kept offline, so a phone accepts nothing that did not come from us.</p></div></li>
+      <li><span class="chip next">Planned</span><div><h3>Locked bootloader and Verified Boot</h3><p>Once release keys exist the bootloader locks, and the phone checks its own system on every start and refuses to boot if anything has been altered. Test builds today leave it unlocked, and say so.</p></div></li>
+      <li><span class="chip next">Planned</span><div><h3>Hardware-backed keys and attestation</h3><p>Keys sealed by the phone's secure hardware, and a way for a phone to prove to you that it is running the real, unmodified OBSIDIAN.</p></div></li>
+    </ul>
   </section>
 
-  <section id="questions" class="band alt">
+  <section id="questions" class="band">
     <h2>Straight answers</h2>
     <div class="qa">
       <details>
@@ -213,10 +210,16 @@
     </div>
   </section>
 
-  <section class="band closing">
-    <h2>Read it for yourself</h2>
-    <p class="section-lede">Every line of the app, the operating system changes and the server module is public.</p>
-    <a class="button" href="https://github.com/ObsidianOSx/ObsidianOS">github.com/ObsidianOSx/ObsidianOS</a>
+  <section class="band alt closing">
+    <h2>Try it, or read every line of it</h2>
+    <p class="section-lede">
+      The installer puts OBSIDIAN on a supported Pixel from your browser in about twenty minutes. The
+      source is public, so nothing here has to be taken on trust.
+    </p>
+    <p class="cta">
+      <a class="button" href="web-install.html">Install from your browser</a>
+      <a class="button quiet" href="https://github.com/ObsidianOSx/ObsidianOS">Read the source</a>
+    </p>
   </section>
 
 </main>

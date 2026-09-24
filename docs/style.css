@@ -277,3 +277,73 @@ button.button.quiet:disabled:hover { background: transparent; border-color: var(
 .card .sha { word-break: break-all; user-select: all; font-size: 13px; line-height: 1.5; }
 .card .row { display: flex; flex-wrap: wrap; gap: 10px; margin: 14px 0 0; }
 .card .row .button { padding: 9px 18px; font-size: 14.5px; }
+
+/* ---------- home page: the phone at the top ---------- */
+
+/* Headline on one side, the phone on the other, stacking to one column on a narrow screen. */
+.hero.split {
+  display: grid; align-items: center; text-align: left;
+  gap: clamp(28px, 5vw, 64px);
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  padding-block: clamp(48px, 7vw, 104px);
+}
+.hero.split .lede { max-width: 54ch; margin-inline: 0; }
+.hero.split .fineprint { max-width: 56ch; }
+.hero.split .cta { justify-content: flex-start; }
+.hero-device, .pair-device { display: flex; justify-content: center; }
+
+/* The phone is drawn rather than photographed: nothing extra to download, sharp at any size. */
+.device {
+  position: relative; width: 100%; max-width: 300px; aspect-ratio: 9 / 20;
+  padding: 9px; border-radius: 42px;
+  background: linear-gradient(155deg, #3d3d47 0%, #17171b 44%, #0c0c0f 100%);
+  box-shadow: 0 34px 90px rgba(0, 0, 0, 0.75), inset 0 0 0 1px #34343d;
+}
+.device img {
+  width: 100%; height: 100%; display: block; object-fit: cover;
+  border: 0; border-radius: 34px; background: #000;
+}
+/* A single sheen across the glass, and nothing that could swallow a tap. */
+.device::after {
+  content: ""; position: absolute; inset: 9px; border-radius: 34px; pointer-events: none;
+  background: linear-gradient(202deg, rgba(255,255,255,0.10), rgba(255,255,255,0) 38%);
+}
+.hero-device .device { filter: drop-shadow(0 0 70px rgba(185, 166, 255, 0.16)); }
+.device.small { max-width: 236px; }
+.shots .device { margin-inline: auto; max-width: 260px; }
+
+/* The band of things that are not on the phone, held to one line of its own. */
+.strip {
+  padding: 16px max(16px, calc((100vw - var(--wide)) / 2));
+  background: var(--ink-2); border-bottom: 1px solid var(--line);
+}
+.strip .strike { margin: 0; justify-content: center; }
+
+/* Text beside a phone, for a section that benefits from showing the thing it describes. */
+.pair {
+  display: grid; align-items: center;
+  gap: clamp(24px, 4vw, 56px);
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+}
+.pair h2, .pair .section-lede { margin-top: 0; }
+.steps.tight li { padding: 13px 16px; }
+.steps.tight p { font-size: 15px; }
+
+/* Where each promise stands: the state first, so the column can be read on its own. */
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+.checklist li {
+  display: flex; gap: 14px; align-items: flex-start;
+  border: 1px solid var(--line); border-radius: var(--radius);
+  padding: 15px 18px; background: rgba(255, 255, 255, 0.015);
+}
+.checklist .chip { flex: none; margin-top: 3px; }
+.checklist h3 { margin: 0 0 4px; font-size: 16.5px; font-weight: 500; color: var(--bright); }
+.checklist p { margin: 0; color: var(--muted); font-size: 15px; }
+
+@media (max-width: 900px) {
+  .hero.split, .pair { grid-template-columns: 1fr; }
+  .hero.split { text-align: center; }
+  .hero.split .lede, .hero.split .fineprint { margin-inline: auto; }
+  .hero.split .cta { justify-content: center; }
+  .checklist li { flex-direction: column; gap: 8px; }
+}

@@ -349,3 +349,8 @@ button.button.quiet:disabled:hover { background: transparent; border-color: var(
 }
 /* A build anyone can install that has not yet been run on that phone in the real world. */
 .chip.trial { color: #b9a6ff; border-color: #4a3f77; background: rgba(185, 166, 255, 0.10); }
+
+/* A call to action inside a section follows the text it belongs to. Only the centred closing
+   sections and the hero put their buttons in the middle. */
+.band .cta { justify-content: flex-start; }
+.band.closing .cta { justify-content: center; }

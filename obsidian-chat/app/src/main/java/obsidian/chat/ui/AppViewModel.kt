@@ -28,7 +28,7 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     private val store = app.secureStore
 
     /** Operating system updates, which go over the same Tor connection the chat uses. */
-    private val updates = obsidian.chat.update.UpdateManager(app, viewModelScope)
+    private val updates = app.updates
     val updateState = updates.state
     val installedVersion: String get() = updates.installedVersion
 

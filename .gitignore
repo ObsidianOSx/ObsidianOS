@@ -29,3 +29,7 @@ obsidian-chat/tools/emulator-test/local/
 
 # The upstream project name, used by the change script to replace it. Kept out of the public source.
 obsidian-os/scripts/upstream.env
+
+# Release signing keys never belong in the repository, wherever someone puts them.
+*.pk8
+obsidian-keys/

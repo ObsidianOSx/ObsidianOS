@@ -35,6 +35,9 @@ KEYS=(
 )
 
 command -v openssl >/dev/null || { echo "openssl is required"; exit 1; }
+# Git Bash on Windows rewrites anything that looks like a path, which mangles the certificate
+# subject into a Windows directory. Harmless everywhere else.
+export MSYS_NO_PATHCONV=1
 
 if [ -e "$DEST" ] && [ -n "$(ls -A "$DEST" 2>/dev/null || true)" ]; then
   echo "$DEST already contains files. Refusing to overwrite existing keys."

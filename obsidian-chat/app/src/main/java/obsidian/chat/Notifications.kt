@@ -17,6 +17,8 @@ import androidx.core.content.ContextCompat
 object Notifications {
     private const val CHANNEL = "sealed-messages"
     private const val ID = 1
+    private const val UPDATE_CHANNEL = "system-updates"
+    private const val UPDATE_ID = 2
 
     fun ensureChannel(context: Context) {
         val manager = context.getSystemService(NotificationManager::class.java) ?: return
@@ -26,6 +28,15 @@ object Notifications {
             lockscreenVisibility = Notification.VISIBILITY_SECRET
         }
         manager.createNotificationChannel(channel)
+
+        // Updates get their own channel, so someone can silence message alerts without also
+        // silencing the one that tells them their phone is missing security fixes.
+        manager.createNotificationChannel(
+            NotificationChannel(UPDATE_CHANNEL, "System updates", NotificationManager.IMPORTANCE_DEFAULT).apply {
+                description = "Tells you when a new version of OBSIDIAN is available"
+                lockscreenVisibility = Notification.VISIBILITY_SECRET
+            }
+        )
     }
 
     fun sealedMessageArrived(context: Context) {
@@ -49,6 +60,33 @@ object Notifications {
             .setContentIntent(open)
             .build()
         context.getSystemService(NotificationManager::class.java)?.notify(ID, notification)
+    }
+
+    /**
+     * A security update is waiting. Worth interrupting someone for: the alternative is a phone that
+     * quietly stays on an old system because nobody happened to open the right screen.
+     */
+    fun updateAvailable(context: Context, version: String) {
+        if (ContextCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS)
+            != PackageManager.PERMISSION_GRANTED
+        ) {
+            return
+        }
+        val open = PendingIntent.getActivity(
+            context,
+            0,
+            Intent(context, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK),
+            PendingIntent.FLAG_IMMUTABLE,
+        )
+        val notification = Notification.Builder(context, UPDATE_CHANNEL)
+            .setSmallIcon(R.mipmap.ic_launcher)
+            .setContentTitle("System update $version")
+            .setContentText("Open OBSIDIAN, then Security, to install it")
+            .setVisibility(Notification.VISIBILITY_SECRET)
+            .setAutoCancel(true)
+            .setContentIntent(open)
+            .build()
+        context.getSystemService(NotificationManager::class.java)?.notify(UPDATE_ID, notification)
     }
 
     fun clear(context: Context) {

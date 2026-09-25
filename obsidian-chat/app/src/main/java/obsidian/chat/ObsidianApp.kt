@@ -22,6 +22,13 @@ class ObsidianApp : Application() {
         private set
     lateinit var secureStore: SecureStore
         private set
+    lateinit var updates: obsidian.chat.update.UpdateManager
+        private set
+
+    /** Lives as long as the app, for work that should not stop when a screen closes. */
+    private val appScope = kotlinx.coroutines.CoroutineScope(
+        kotlinx.coroutines.SupervisorJob() + kotlinx.coroutines.Dispatchers.Default
+    )
 
     override fun onCreate() {
         super.onCreate()
@@ -48,5 +55,10 @@ class ObsidianApp : Application() {
         tor = TorManager(this).also { it.start() }
         secureStore = SecureStore(this)
         client = ChatClient(this, tor, secureStore)
+
+        // Look for operating system updates in the background, so a phone does not stay on an old
+        // system just because nobody opened the security screen. It only ever asks; installing is
+        // still something a person chooses.
+        updates = obsidian.chat.update.UpdateManager(this, appScope).also { it.watchForUpdates(tor.state) }
     }
 }

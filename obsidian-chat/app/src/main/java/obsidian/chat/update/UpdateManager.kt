@@ -10,10 +10,14 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import obsidian.chat.BuildConfig
+import obsidian.chat.Notifications
+import obsidian.chat.tor.TorManager
 import obsidian.chat.security.PanicDeviceAdmin
 
 /**
@@ -52,6 +56,31 @@ class UpdateManager(
     private val device: String get() = SystemProperties.get(DEVICE_PROPERTY, "")
 
     private var pending: Pair<UpdateMetadata, File>? = null
+
+    /**
+     * Looks for updates on its own, so a phone does not sit on an old system because nobody opened
+     * the right screen. It waits for Tor, checks, then checks again twice a day, and tells the
+     * person once per version rather than nagging.
+     *
+     * Nothing is downloaded or installed without being asked. The check itself is one small request
+     * over Tor, carrying nothing that identifies the phone.
+     */
+    fun watchForUpdates(torState: StateFlow<TorManager.State>) {
+        scope.launch {
+            var announced = ""
+            while (true) {
+                val ready = torState.first { it is TorManager.State.Ready } as TorManager.State.Ready
+                check(ready.socksPort)
+                // Let the check finish before deciding whether to say anything about it.
+                val settled = state.first { it !is State.Checking }
+                if (settled is State.Available && settled.version != announced) {
+                    announced = settled.version
+                    Notifications.updateAvailable(context, settled.version)
+                }
+                delay(CHECK_EVERY_MS)
+            }
+        }
+    }
 
     fun check(socksPort: Int) {
         if (BuildConfig.UPDATE_CERT_PEM.isBlank()) {
@@ -152,5 +181,8 @@ class UpdateManager(
         const val TAG = "ObsidianUpdate"
         const val VERSION_PROPERTY = "ro.obsidian.version"
         const val DEVICE_PROPERTY = "ro.obsidian.device"
+        // Twice a day. Often enough that a security fix is picked up within hours of publishing,
+        // rare enough to be nothing on the battery or the Tor circuit.
+        const val CHECK_EVERY_MS = 12L * 60 * 60 * 1000
     }
 }

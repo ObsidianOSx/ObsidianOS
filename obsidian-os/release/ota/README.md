@@ -37,6 +37,17 @@ and signing happens where the keys are.
 ./generate-keys.sh ~/obsidian-keys     # once, ever. Then back it up, encrypted, twice.
 ```
 
+A build also needs a key for each of its system modules and for the apps the build signs with a named
+key of their own. Run this against the build, and again whenever a build gains something new:
+
+```bash
+./generate-build-keys.sh <target-files.zip> ~/obsidian-keys
+```
+
+For the Pixel 8 that is 141 keys in total. Without them the image keeps the public test keys that
+ship in the Android source, which everyone has, and those parts of the system could be replaced by
+anyone.
+
 Losing them means phones with a locked bootloader cannot be updated and cannot be recovered without
 erasing them. Having them stolen means every phone must be reflashed by hand with new keys. Back
 them up properly, offline, in two places you physically control.

@@ -18,12 +18,15 @@ SSH_OPTS=(-o ConnectTimeout=25 -o ServerAliveInterval=30)
 [ -n "$SSH_KEY" ] && SSH_OPTS+=(-i "$SSH_KEY")
 
 TF="os/out/target/product/$DEVICE/obj/PACKAGING/target_files_intermediates/$DEVICE-target_files.zip"
+# The otatools package has no .zip on the end and sits under a long intermediates path. It is a
+# zip all the same, and it is the only copy the build produces.
+OT="os/out/host/linux-x86/obj/ETC/otatools-packagelinux_glibc_x86_64_intermediates/otatools-packagelinux_glibc_x86_64"
 
 echo "[1/4] checking the build server has what we need"
 ssh "${SSH_OPTS[@]}" "$SERVER" "test -f ~/$TF" || {
   echo "no target-files for $DEVICE on the server. Build it first."; exit 1; }
 # otatools is not built by default, and it is quick compared to a build, so just make sure it exists.
-ssh "${SSH_OPTS[@]}" "$SERVER" 'test -f ~/os/out/otatools.zip' || {
+ssh "${SSH_OPTS[@]}" "$SERVER" "test -f ~/$OT" || {
   echo "      otatools.zip is missing, building it now (a few minutes)"
   ssh "${SSH_OPTS[@]}" "$SERVER" 'cd ~/os && source build/envsetup.sh >/dev/null && lunch '"$DEVICE"'-cur-userdebug >/dev/null && m otatools-package' \
     | tail -3 | sed 's/^/      /'
@@ -33,13 +36,13 @@ mkdir -p "$DEST"
 echo "[2/4] fetching the build, about 3.6 GB"
 scp "${SSH_OPTS[@]}" -q "$SERVER:$TF" "$DEST/$DEVICE-target_files.zip"
 echo "[3/4] fetching the signing tools"
-scp "${SSH_OPTS[@]}" -q "$SERVER:os/out/otatools.zip" "$DEST/otatools.zip"
+scp "${SSH_OPTS[@]}" -q "$SERVER:$OT" "$DEST/otatools.zip"
 
 echo "[4/4] checking both arrived intact"
 for f in "$DEST/$DEVICE-target_files.zip" "$DEST/otatools.zip"; do
   remote=$(basename "$f")
   case "$remote" in
-    otatools.zip) rpath='os/out/otatools.zip' ;;
+    otatools.zip) rpath="$OT" ;;
     *)            rpath="$TF" ;;
   esac
   want=$(ssh "${SSH_OPTS[@]}" "$SERVER" "sha256sum ~/$rpath | cut -d' ' -f1")

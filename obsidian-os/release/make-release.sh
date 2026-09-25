@@ -19,6 +19,7 @@ case "$DEVICE" in
   tokay) MODEL="Pixel 9" ;;
   panther) MODEL="Pixel 7" ;;
   oriole) MODEL="Pixel 6" ;;
+  frankel) MODEL="Pixel 10" ;;
   *) echo "no model name known for $DEVICE: add it here first"; exit 1 ;;
 esac
 OUT=${OUT:-$HOME/os/out/target/product/$DEVICE}

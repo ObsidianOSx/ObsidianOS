@@ -16,6 +16,21 @@
       ]
     },
     {
+      "device": "frankel",
+      "model": "Pixel 10",
+      "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 10. It is here to be tested. Not the Pixel 10 Pro, Pro XL or Pro Fold.",
+      "releases": [
+        {
+          "version": "2026.09.25-test",
+          "date": "2026-09-25",
+          "keys": "test",
+          "file": "releases/obsidian-frankel-2026.09.25-test.zip",
+          "size": 2317239731,
+          "sha256": "75eab73a7e2257d94cde0922c0aa4d7a9df077863fca1215297f2f9786386a6b"
+        }
+      ]
+    },
+    {
       "device": "tokay",
       "model": "Pixel 9",
       "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 9. It is here to be tested. Not the Pixel 9 Pro, Pro XL or Pro Fold.",
@@ -44,14 +59,22 @@
           "sha256": "fea8c129cd50657472347034061b2125c2615396f4228f346b64bab94625e86d"
         }
       ]
-    }
-  ],
-  "pending": [
+    },
     {
       "device": "oriole",
       "model": "Pixel 6",
-      "state": "Being built",
-      "note": "The Pixel 6 build is running now and will be published here when it finishes. Google's updates for this phone stop in October 2026, and it has no memory tagging, so it is for trying OBSIDIAN on a phone you already own rather than one to buy and rely on."
+      "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 6. It is here to be tested. Google's updates for this phone stop in October 2026, and it has no memory tagging, so use one you already own rather than buying one to rely on. Not the Pixel 6 Pro or the Pixel 6a.",
+      "releases": [
+        {
+          "version": "2026.09.25-test",
+          "date": "2026-09-25",
+          "keys": "test",
+          "file": "releases/obsidian-oriole-2026.09.25-test.zip",
+          "size": 2105826866,
+          "sha256": "7c7f2259100b6f6f38f904d2d4379f9227701748a9e823e94bdc0e2c0874f7d9"
+        }
+      ]
     }
-  ]
+  ],
+  "pending": []
 }

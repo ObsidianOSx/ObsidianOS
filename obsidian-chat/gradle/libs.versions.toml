@@ -60,6 +60,8 @@ smack-tcp = { module = "org.igniterealtime.smack:smack-tcp", version.ref = "smac
 sqlcipher-android = { module = "net.zetetic:sqlcipher-android", version.ref = "sqlcipher" }
 tor-android = { module = "info.guardianproject:tor-android", version.ref = "torAndroid" }
 xpp3 = { module = "org.codelibs:xpp3", version = "1.1.4c.0" }
+# Android stubs out org.json in unit tests, so the real one is needed to parse anything there.
+json = { module = "org.json:json", version = "20250107" }
 zxing-core = { module = "com.google.zxing:core", version.ref = "zxing" }
 
 [plugins]

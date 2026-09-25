@@ -32,6 +32,21 @@ for f in "$IMG" "$OUT/bootloader.img" "$OUT/radio.img"; do
   [ -f "$f" ] || { echo "missing $f"; exit 1; }
 done
 
+# The image stamps the version it was built with. If the two disagree, a phone would report one
+# version while the download that produced it claims another, which makes updates impossible to
+# reason about, so stop rather than publish the mismatch.
+BAKED=""
+for p in "$OUT/product/etc/build.prop" "$OUT/product/build.prop" "$OUT/system/build.prop"; do
+  [ -f "$p" ] && BAKED=$(sed -n 's/^ro\.obsidian\.version=//p' "$p" | head -1) && [ -n "$BAKED" ] && break
+done
+if [ -z "$BAKED" ]; then
+  echo "note: this image predates version stamping, so nothing inside it names the release"
+elif [ "$BAKED" != "$VERSION" ]; then
+  echo "the image says it is $BAKED but you asked to release it as $VERSION"
+  echo "build with OBSIDIAN_VERSION=$VERSION, or release it under the name it was built with"
+  exit 1
+fi
+
 INFO=$(unzip -p "$IMG" android-info.txt)
 BL=$(printf '%s\n' "$INFO" | sed -n 's/^require version-bootloader=//p')
 RADIO=$(printf '%s\n' "$INFO" | sed -n 's/^require version-baseband=//p')

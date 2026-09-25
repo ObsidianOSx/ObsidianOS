@@ -14,6 +14,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -25,6 +26,7 @@ import obsidian.chat.BuildConfig
 import obsidian.chat.crypto.PgpIdentity
 import obsidian.chat.security.KeyBox
 import obsidian.chat.tor.TorManager
+import obsidian.chat.update.UpdateManager
 import obsidian.chat.xmpp.ChatClient
 import obsidian.chat.xmpp.TorOnlyDns
 
@@ -61,6 +63,8 @@ fun SecurityScreen(vm: AppViewModel) {
                 is TorManager.State.Failed -> listOf("Failed: ${torNow.reason}")
             },
         )
+
+        UpdateItem(vm)
 
         val statusNow = status
         StatusItem(
@@ -127,6 +131,64 @@ fun SecurityScreen(vm: AppViewModel) {
         PinSettings(vm)
     }
 }
+
+/**
+ * The operating system's own updates. Android security fixes come out monthly, and a phone that
+ * cannot take them stops being safe to carry, so this sits beside the other things that protect it
+ * rather than being buried in a settings menu.
+ */
+@Composable
+private fun UpdateItem(vm: AppViewModel) {
+    val update by vm.updateState.collectAsState()
+    val tor by vm.torState.collectAsState()
+    val ready = tor is TorManager.State.Ready
+    val now = update
+
+    // Ask once when the screen is first opened and Tor is up, so the answer is usually already there.
+    LaunchedEffect(ready) { if (ready) vm.checkForUpdate() }
+
+    Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        StatusItem(
+            title = "Operating system",
+            ok = now is UpdateManager.State.UpToDate || now is UpdateManager.State.ReadyToRestart,
+            lines = buildList {
+                add("OBSIDIAN ${vm.installedVersion}")
+                when (now) {
+                    UpdateManager.State.Unknown -> add(if (ready) "Checking for updates" else "Waiting for Tor")
+                    UpdateManager.State.Checking -> add("Checking for updates")
+                    UpdateManager.State.NotConfigured ->
+                        add("This is a test build, so it cannot receive updates. Install a new release by hand.")
+                    is UpdateManager.State.UpToDate -> add("Up to date")
+                    is UpdateManager.State.Available -> {
+                        add("Version ${now.version} is available, ${bytesInGb(now.bytes)}")
+                        if (now.small) add("A small update, because it only carries what changed")
+                        add("Downloaded over Tor and checked against the OBSIDIAN signing key before it is installed")
+                    }
+                    is UpdateManager.State.Downloading -> add("Downloading ${now.version} over Tor: ${now.percent}%")
+                    is UpdateManager.State.Installing ->
+                        add("${now.phase}: ${now.percent}%. You can keep using the phone.")
+                    is UpdateManager.State.ReadyToRestart ->
+                        add("Version ${now.version} is installed and starts when the phone restarts")
+                    is UpdateManager.State.Failed -> add(now.message)
+                }
+            },
+        )
+        when (now) {
+            is UpdateManager.State.Available ->
+                TextButton(onClick = { vm.installUpdate() }, enabled = ready) { Text("Download and install") }
+            is UpdateManager.State.ReadyToRestart ->
+                TextButton(onClick = { vm.restartForUpdate() }) { Text("Restart now") }
+            is UpdateManager.State.Failed ->
+                TextButton(onClick = { vm.checkForUpdate() }, enabled = ready) { Text("Try again") }
+            is UpdateManager.State.UpToDate ->
+                TextButton(onClick = { vm.checkForUpdate() }, enabled = ready) { Text("Check again") }
+            else -> Unit
+        }
+    }
+}
+
+private fun bytesInGb(bytes: Long): String =
+    if (bytes >= 1_000_000_000L) "%.2f GB".format(bytes / 1e9) else "%.0f MB".format(bytes / 1e6)
 
 @Composable
 private fun StatusItem(title: String, ok: Boolean, lines: List<String>, monospaceLine: Int = -1) {

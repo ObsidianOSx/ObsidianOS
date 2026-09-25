@@ -164,9 +164,19 @@ on property:sys.boot_completed=1
 EOF
 
 echo "== 3. the OBSIDIAN product pieces"
-write_if_changed "$V/obsidian.mk" <<'EOF'
+# The phone has to be able to say which release it is running, or it cannot tell whether an update
+# is newer than itself, and nobody can tell what a phone in front of them has on it. The version is
+# decided when the build starts and read back out of the image afterwards, so the name on the
+# release and the name inside it can never drift apart.
+OBSIDIAN_VERSION=${OBSIDIAN_VERSION:-$(date -u +%Y.%m.%d)}
+sed -e "s|@VERSION@|$OBSIDIAN_VERSION|g" -e "s|@DEVICE@|$TARGET|g" <<'EOF' | write_if_changed "$V/obsidian.mk"
 PRODUCT_PACKAGES += \
     ObsidianChat
+
+# What this phone is running, in the form people see it written down.
+PRODUCT_PRODUCT_PROPERTIES += \
+    ro.obsidian.version=@VERSION@ \
+    ro.obsidian.device=@DEVICE@
 
 # These go on the product partition, NOT system: the generic system image has an enforced
 # artifact path requirement, so any extra file under system/ fails the build outright.

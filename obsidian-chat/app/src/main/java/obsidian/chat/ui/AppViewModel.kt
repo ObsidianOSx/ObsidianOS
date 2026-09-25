@@ -27,6 +27,18 @@ class AppViewModel(application: Application) : AndroidViewModel(application) {
     val changes = client.changes
     private val store = app.secureStore
 
+    /** Operating system updates, which go over the same Tor connection the chat uses. */
+    private val updates = obsidian.chat.update.UpdateManager(app, viewModelScope)
+    val updateState = updates.state
+    val installedVersion: String get() = updates.installedVersion
+
+    private fun socksPortOrNull(): Int? =
+        (torState.value as? obsidian.chat.tor.TorManager.State.Ready)?.socksPort
+
+    fun checkForUpdate() { socksPortOrNull()?.let(updates::check) }
+    fun installUpdate() { socksPortOrNull()?.let(updates::downloadAndInstall) }
+    fun restartForUpdate() = updates.restartNow()
+
     /** With a PIN set, the app locks itself whenever it leaves the foreground. */
     var locked by mutableStateOf(obsidian.chat.security.AppLock.isSet(app.secureStore))
         private set

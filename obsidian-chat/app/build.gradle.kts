@@ -30,6 +30,20 @@ android {
             }
         buildConfigField("String", "SERVER_DOMAIN", "\"${serverSetting("obsidian.serverDomain", "example.onion")}\"")
         buildConfigField("String", "SERVER_SPKI_SHA256", "\"${serverSetting("obsidian.serverSpkiSha256", "")}\"")
+        // Where the phone looks for operating system updates, and the certificate it checks them
+        // against. The certificate is the public half of the release signing key: without it a
+        // build cannot tell a genuine update from any other file, and says so rather than guessing.
+        // Test builds have no release key yet, so this is empty and updates are simply switched off.
+        buildConfigField("String", "UPDATE_DOMAIN",
+            "\"${providers.gradleProperty("obsidian.updateDomain").orNull ?: localProps.getProperty("obsidian.updateDomain") ?: "obsidianos.org"}\"")
+        val updateCertPath = providers.gradleProperty("obsidian.updateCert").orNull
+            ?: localProps.getProperty("obsidian.updateCert")
+        val updateCert = updateCertPath?.let { path ->
+            rootProject.file(path).takeIf { it.exists() }?.readText()
+                ?: run { logger.warn("obsidian.updateCert points at $path, which does not exist"); null }
+        } ?: ""
+        buildConfigField("String", "UPDATE_CERT_PEM", "\"${updateCert.replace("\n", "\\n")}\"")
+
         // Shown on the security status screen
         buildConfigField("String", "TOR_VERSION", "\"${libs.versions.torAndroid.get()}\"")
         buildConfigField("String", "SMACK_VERSION", "\"${libs.versions.smack.get()}\"")
@@ -79,6 +93,9 @@ kotlin {
 }
 
 dependencies {
+    // Parts of the framework that exist on the phone but not in the public SDK. compileOnly, so
+    // nothing from here is packaged and the phone's own classes are used at run time.
+    compileOnly(project(":platform-stubs"))
   coreLibraryDesugaring(libs.desugar.jdk.libs)
 
   val composeBom = platform(libs.androidx.compose.bom)
@@ -110,6 +127,7 @@ dependencies {
   testImplementation(libs.kotlinx.coroutines.test)
   // On the JVM there is no platform XmlPullParser, which Smack needs to start up
   testImplementation(libs.xpp3)
+  testImplementation(libs.json)
 
   // Instrumented tests: jUnit rules and runners
   androidTestImplementation(libs.androidx.test.core)

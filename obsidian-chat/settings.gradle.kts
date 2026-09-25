@@ -31,3 +31,4 @@ plugins {
 
 rootProject.name = "Obsidian Chat"
 include(":app")
+include(":platform-stubs")

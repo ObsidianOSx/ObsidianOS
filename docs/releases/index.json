@@ -6,6 +6,22 @@
       "note": "The phone OBSIDIAN is built and tested on. This release has been installed on a real Pixel 8 and used. Nothing here fits the Pixel 8 Pro or the Pixel 8a.",
       "releases": [
         {
+          "version": "2026.09.26",
+          "date": "2026-09-26",
+          "keys": "test",
+          "file": "releases/obsidian-shiba-2026.09.26.zip",
+          "size": 2104162887,
+          "sha256": "8fe472bb6627c14caf6f9e34b541ae46b320466aac6b6c64161534c0cc4172ff"
+        },
+        {
+          "version": "2026.09.25",
+          "date": "2026-09-25",
+          "keys": "test",
+          "file": "releases/obsidian-shiba-2026.09.25.zip",
+          "size": 1972994545,
+          "sha256": "1460e075843b0f4e7ef9af643496a490a5df770a955e5031012581a4a61f27d4"
+        },
+        {
           "version": "2026.09.22-test2",
           "date": "2026-09-22",
           "keys": "test",

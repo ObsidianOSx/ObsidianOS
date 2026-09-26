@@ -99,6 +99,9 @@ mkdir -p "$V/prebuilt/ObsidianChat" "$V/provision" "$V/install"
 copy_if_changed "$APKS/ObsidianChat.apk" "$V/prebuilt/ObsidianChat/ObsidianChat.apk"
 # Tor Browser is a payload file, not a build module - see the note at the top of this script.
 copy_if_changed "$TOR_APK" "$V/install/TorBrowser.payload"
+# Cake Wallet, for Monero. Same treatment as Tor Browser and for the same reason: it is installed
+# at first boot rather than built in, which also keeps the developer's own signature on it.
+[ -f "$APKS/CakeWallet-arm64.apk" ] && copy_if_changed "$APKS/CakeWallet-arm64.apk" "$V/install/CakeWallet.payload"
 rm -rf "$V/prebuilt/TorBrowser"
 rm -f "$V/install/TorBrowser.apk"   # stale name from before the payload rename
 
@@ -130,6 +133,17 @@ write_if_changed "$V/provision/obsidian-provision.sh" <<'EOF'
 # app cannot be replaced later without fs-verity. Installing also keeps its official signature.
 if [ -f /product/obsidian/TorBrowser.payload ] && ! pm path org.torproject.torbrowser >/dev/null 2>&1; then
   pm install -t /product/obsidian/TorBrowser.payload
+fi
+
+# Cake Wallet, installed the same way and for the same reasons as Tor Browser above.
+if [ -f /product/obsidian/CakeWallet.payload ] && ! pm path com.cakewallet.cake_wallet >/dev/null 2>&1; then
+  pm install -t /product/obsidian/CakeWallet.payload
+  # It asks for location and bluetooth. This phone holds location off for everything anyway, but
+  # denying them outright means the permission screen tells the truth about what it has. The
+  # camera is left alone: it needs that to read an address from a QR code.
+  for perm in ACCESS_FINE_LOCATION ACCESS_COARSE_LOCATION BLUETOOTH_SCAN BLUETOOTH_CONNECT BLUETOOTH_ADVERTISE; do
+    pm revoke com.cakewallet.cake_wallet "android.permission.$perm" 2>/dev/null || true
+  done
 fi
 
 # Three-button navigation instead of gestures: a visible Back button is self-evident, and on a
@@ -185,6 +199,7 @@ PRODUCT_PRODUCT_PROPERTIES += \
 # cannot load compressed libraries from a read-only system partition.
 PRODUCT_COPY_FILES += \
     vendor/obsidian/install/TorBrowser.payload:$(TARGET_COPY_OUT_PRODUCT)/obsidian/TorBrowser.payload \
+    vendor/obsidian/install/CakeWallet.payload:$(TARGET_COPY_OUT_PRODUCT)/obsidian/CakeWallet.payload \
     vendor/obsidian/provision/obsidian-provision.sh:$(TARGET_COPY_OUT_PRODUCT)/bin/obsidian-provision.sh \
     vendor/obsidian/provision/obsidian-provision.rc:$(TARGET_COPY_OUT_PRODUCT)/etc/init/obsidian-provision.rc
 EOF

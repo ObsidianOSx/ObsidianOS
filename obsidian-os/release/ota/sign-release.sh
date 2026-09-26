@@ -83,25 +83,19 @@ echo "      vbmeta${CHAINED:+, plus its own key for:$CHAINED}"
 # Each APEX module carries its own signature, and an unsigned build still has the public test keys
 # from the Android source in it. Those have to be replaced too, or those parts of the system could
 # be swapped by anyone, since everybody has the same test keys.
+# Every module's contents are signed with the one Verified Boot key, and every module's container
+# with the release key. This is what the upstream project does, and it matters: giving each module
+# its own key produces an image that flashes and starts but dies during Android's own startup,
+# because parts of the system carry a copy of the key they expect these to be signed with.
 echo "[3/7] pointing every APEX module at our own keys"
 APEX_ARGS=()
-missing=""
+modules=0
 while read -r apex; do
   [ -n "$apex" ] || continue
-  base=${apex%.apex}
-  if [ -f "$KEYS/$base.pem" ] && [ -f "$KEYS/$base.pk8" ] && [ -f "$KEYS/$base.x509.pem" ]; then
-    APEX_ARGS+=(--extra_apex_payload_key "$apex=$KEYS/$base.pem" --extra_apks "$apex=$KEYS/$base")
-  else
-    missing="$missing $base"
-  fi
+  APEX_ARGS+=(--extra_apks "$apex=$KEYS/releasekey" --extra_apex_payload_key "$apex=$KEYS/avb.pem")
+  modules=$((modules + 1))
 done <<< "$(unzip -p "$TARGET_FILES" META/apexkeys.txt | sed -n 's/^name="\([^"]*\)".*/\1/p' | sort -u)"
-if [ -n "$missing" ]; then
-  echo "      no keys for:$missing"
-  echo "      run generate-build-keys.sh against this build first, or those modules would keep the"
-  echo "      public test keys that ship in the Android source."
-  exit 1
-fi
-echo "      ${#APEX_ARGS[@]} arguments for $(( ${#APEX_ARGS[@]} / 4 )) modules"
+echo "      $modules modules, contents signed with the Verified Boot key, containers with the release key"
 
 # Some modules carry apps inside them, and those are signed separately again. The signing tool has
 # no way to guess a key for them and stops on the first one it meets, so find them by looking in
@@ -129,10 +123,13 @@ for apk in $NESTED; do
   APEX_ARGS+=(--extra_apks "$apk=$KEYS/releasekey")
   count=$((count + 1))
 done
+[ -f "$KEYS/bluetooth.pk8" ] && APEX_ARGS+=(--extra_apks "Bluetooth.apk=$KEYS/bluetooth")
 echo "      $count app$([ "$count" = 1 ] || echo s) inside modules, signed with the release key"
 
 echo "[4/7] signing the image, which replaces every test key in it"
-"$TOOLS/sign_target_files_apks" \
+# -o also replaces the certificates the phone checks updates against, so a phone built this way
+# accepts updates signed by us and nothing else.
+"$TOOLS/sign_target_files_apks" -o \
   --default_key_mappings "$KEYS" \
   "${AVB_ARGS[@]}" \
   "${APEX_ARGS[@]}" \

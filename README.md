@@ -2,7 +2,7 @@
 
 A free, open source Android system for Google Pixel phones, stripped back to what private
 communication actually needs and nothing else. There are three apps on it: a chat app, Tor Browser
-and a camera. That is the whole phone.
+and a camera, plus a Monero wallet you can use or ignore.
 
 Obsidian Chat works over Tor, so messages do not touch the normal internet on their way out. They
 are end to end encrypted, and new ones arrive sealed until you tap them open. You pick a username,
@@ -63,7 +63,8 @@ cannot verify refuses to start.
 
 ## The phone
 
-- **Three apps:** Obsidian Chat, Tor Browser and the camera, plus Settings. Nothing else.
+- **Three apps:** Obsidian Chat, Tor Browser and the camera, plus Settings. Cake Wallet is there for
+  Monero if you want it, and nothing else is.
 - **No calls or texts:** the dialler and messaging apps are removed from the image.
 - **Location off, for good:** Obsidian Chat is the phone's device owner and holds location
   switched off, with the switch taken away.

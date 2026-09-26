@@ -78,6 +78,17 @@ fun HoldToWipeButton(onWipe: () -> Unit, modifier: Modifier = Modifier) {
                     color = MaterialTheme.colorScheme.error,
                     modifier = Modifier.fillMaxWidth(),
                 )
+            } else {
+                // Said here, where it can be read in advance, rather than as a confirmation at the
+                // moment someone needs the wipe to be instant. A Monero wallet cannot be recovered
+                // from this phone once it is erased, only from a seed written down somewhere else.
+                Text(
+                    "Erases everything, including your Monero wallet. Write its seed down somewhere " +
+                        "safe, or the money goes with the phone.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    textAlign = TextAlign.Center,
+                )
             }
         }
     }

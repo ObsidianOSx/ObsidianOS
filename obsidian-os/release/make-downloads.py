@@ -183,7 +183,7 @@ def page(index):
       </div>
       <div class="item">
         <h3>image zip</h3>
-        <p>OBSIDIAN itself: the system, the three apps and the settings that cannot be changed.</p>
+        <p>OBSIDIAN itself: the system, its apps and the settings that cannot be changed.</p>
       </div>
       <div class="item">
         <h3>README.txt</h3>

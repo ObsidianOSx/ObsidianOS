@@ -37,6 +37,14 @@
       "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 10. It is here to be tested. Not the Pixel 10 Pro, Pro XL or Pro Fold.",
       "releases": [
         {
+          "version": "2026.09.26",
+          "date": "2026-09-26",
+          "keys": "test",
+          "file": "releases/obsidian-frankel-2026.09.26.zip",
+          "size": 2448411380,
+          "sha256": "b84321c4126d49353d9972fdc917f69c986160f13676ae007624ecb0ad2fd31c"
+        },
+        {
           "version": "2026.09.25-test",
           "date": "2026-09-25",
           "keys": "test",
@@ -51,6 +59,14 @@
       "model": "Pixel 9",
       "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 9. It is here to be tested. Not the Pixel 9 Pro, Pro XL or Pro Fold.",
       "releases": [
+        {
+          "version": "2026.09.26",
+          "date": "2026-09-26",
+          "keys": "test",
+          "file": "releases/obsidian-tokay-2026.09.26.zip",
+          "size": 2296593276,
+          "sha256": "6b5989f046eab61bdbc209f4c4087d3561e2bb2298a7c488b4dc18723d0cd0e8"
+        },
         {
           "version": "2026.09.22-test",
           "date": "2026-09-22",
@@ -67,6 +83,14 @@
       "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 7. It is here to be tested. This phone has no memory tagging, and Google's updates for it stop in October 2027. Not the Pixel 7 Pro or the Pixel 7a.",
       "releases": [
         {
+          "version": "2026.09.26",
+          "date": "2026-09-26",
+          "keys": "test",
+          "file": "releases/obsidian-panther-2026.09.26.zip",
+          "size": 2016156893,
+          "sha256": "b3e98ad4dbb8506dff0a2bf8b3da610ef916acd4eec27727cc4022cff2c079cb"
+        },
+        {
           "version": "2026.09.24-test",
           "date": "2026-09-24",
           "keys": "test",
@@ -81,6 +105,14 @@
       "model": "Pixel 6",
       "note": "Built, and the whole install proved step by step against a stand in for the phone, but not yet installed on a real Pixel 6. It is here to be tested. Google's updates for this phone stop in October 2026, and it has no memory tagging, so use one you already own rather than buying one to rely on. Not the Pixel 6 Pro or the Pixel 6a.",
       "releases": [
+        {
+          "version": "2026.09.26",
+          "date": "2026-09-26",
+          "keys": "test",
+          "file": "releases/obsidian-oriole-2026.09.26.zip",
+          "size": 2236985147,
+          "sha256": "65a72ec8b7112e3039480691a277ab18f2dfe4c452e45d24b19d1b8ed5ebd542"
+        },
         {
           "version": "2026.09.25-test",
           "date": "2026-09-25",

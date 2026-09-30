@@ -2,6 +2,7 @@ package obsidian.chat.xmpp
 
 import android.content.Context
 import android.util.Base64
+import android.util.Log
 import java.security.SecureRandom
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
@@ -16,6 +17,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import obsidian.chat.BuildConfig
 import obsidian.chat.crypto.PgpIdentity
 import obsidian.chat.data.ChatDatabase
@@ -30,10 +32,12 @@ import org.jivesoftware.smack.ConnectionConfiguration
 import org.jivesoftware.smack.ConnectionListener
 import org.jivesoftware.smack.ReconnectionManager
 import org.jivesoftware.smack.XMPPConnection
+import org.jivesoftware.smack.XMPPException
 import org.jivesoftware.smack.filter.StanzaTypeFilter
 import org.jivesoftware.smack.packet.Message
 import org.jivesoftware.smack.packet.Presence
 import org.jivesoftware.smack.packet.Stanza
+import org.jivesoftware.smack.packet.StanzaError
 import org.jivesoftware.smack.roster.AbstractRosterListener
 import org.jivesoftware.smack.roster.Roster
 import org.jivesoftware.smack.roster.SubscribeListener
@@ -167,6 +171,14 @@ class ChatClient(
                 try {
                     registration.connect()
                     registration.registerAccount(username, password)
+                } catch (refused: XMPPException.XMPPErrorException) {
+                    // The server says no. The one a person will actually hit is a name someone else
+                    // already has, and "conflict - cancel" tells them nothing about what to do.
+                    throw if (refused.stanzaError?.condition == StanzaError.Condition.conflict) {
+                        IllegalStateException("That username is taken. Choose another one.")
+                    } else {
+                        refused
+                    }
                 } finally {
                     registration.disconnect()
                 }
@@ -178,7 +190,14 @@ class ChatClient(
                 // Written last: its presence marks the account as complete
                 store.putString(SecureStore.ACCOUNT_JID, jid)
             }
-            connectLocked()
+            // The account exists on the server from here on, and the password is stored, so setting
+            // up has succeeded whatever happens next. Connecting for the first time means several
+            // more round trips over Tor to publish the keys, and if the server drops the stream
+            // partway that used to hang here with the screen still saying "creating your account",
+            // no error, nothing to press, and an account that in fact existed. Connecting is what
+            // the status line reports anyway, so let setup finish and let that speak for itself.
+            runCatching { withTimeoutOrNull(FIRST_CONNECT_MS) { connectLocked() } }
+                .onFailure { Log.w(TAG, "the account was made, but the first connection did not finish", it) }
         }
     }
 
@@ -564,4 +583,12 @@ class ChatClient(
             val conn = connection?.takeIf { it.isAuthenticated } ?: throw IllegalStateException("Not connected to the server")
             block(conn)
         }
-    }}
+    }
+
+    private companion object {
+        const val TAG = "ObsidianChat"
+        // Long enough for a first connection over Tor, which publishes the keys and takes several
+        // round trips, and short enough that nobody is left staring at a setup screen.
+        const val FIRST_CONNECT_MS = 120_000L
+    }
+}

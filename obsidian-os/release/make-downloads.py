@@ -164,6 +164,16 @@ def page(index):
   </section>
 
   <section class="band">
+    <h2>Installing a newer one</h2>
+    <p class="section-lede">
+      OBSIDIAN does not update itself, and nothing here can reach your phone to change it. You install
+      a new release when you decide to, and installing it erases the phone exactly as the first
+      install did: the account, the messages and the wallet all go. Write down what you need first,
+      the wallet seed above all. The <a href="install.html">install page</a> has the steps.
+    </p>
+  </section>
+
+  <section class="band alt">
     <h2>What is inside</h2>
     <p class="section-lede">
       The zip holds the whole operating system and the firmware that belongs with it, laid out the way

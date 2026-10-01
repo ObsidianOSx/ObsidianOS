@@ -168,8 +168,10 @@ def page(index):
     <p class="section-lede">
       OBSIDIAN does not update itself, and nothing here can reach your phone to change it. You install
       a new release when you decide to, and installing it erases the phone exactly as the first
-      install did: the account, the messages and the wallet all go. Write down what you need first,
-      the wallet seed above all. The <a href="install.html">install page</a> has the steps.
+      install did: the account, the messages and the wallet all go. You register again afterwards under a
+      different name, because the old one stays taken by an account nobody can sign in to any more. Write
+      down what you need first, the wallet seed above all. The
+      <a href="install.html">install page</a> has the steps.
     </p>
   </section>
 

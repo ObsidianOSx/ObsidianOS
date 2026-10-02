@@ -27,6 +27,12 @@
  *   3. The current slot is made active again before anything is written, as AOSP's own fastboot does.
  *      That clears the record of failed boots an interrupted install leaves, which otherwise makes
  *      the phone call a correctly written slot corrupt.
+ *   4. avb_custom_key, fips, dpm_a and dpm_b are cleared before anything is written, and the serial
+ *      console is turned off, which is what Google's own installer does for these phones on every
+ *      install. These partitions hold firmware signed separately from the system and keep their old
+ *      contents, so left alone they can disagree with the system being installed. The key matters
+ *      most: it was previously only erased when the release carried a replacement, so a key from an
+ *      earlier signed install survived onto a build that could not match it.
  * Nothing else is changed. The unmodified file is published on npm as android-fastboot@1.1.3.
  */
 var DebugLevel;
@@ -8139,6 +8145,20 @@ async function flashZip(device, blob, wipe, onReconnect, onProgress = (_action, 
     let currentSlot = await device.getVariable("current-slot");
     if (currentSlot === "a" || currentSlot === "b") {
         await device.runCommand(`set_active:${currentSlot}`);
+    }
+    // Patch 4: clear the firmware the previous operating system left behind, which is what Google's
+    // own installer does for these phones on every install. These partitions are signed separately
+    // from the system and keep their old contents, so left alone they can disagree with the system
+    // being installed and stop the phone starting. The key is erased here rather than only in step
+    // 7, because step 7 runs only when the release carries a key of its own: without this, a key
+    // from an earlier signed install would survive onto a build that cannot match it.
+    // Each command is allowed to fail, because which of these partitions exists differs by model.
+    for (let command of ["erase:avb_custom_key", "oem uart disable", "erase:fips", "erase:dpm_a", "erase:dpm_b"]) {
+        try {
+            await device.runCommand(command);
+        } catch (e) {
+            // This phone has no such partition. Nothing to clear, so nothing to do.
+        }
     }
     // 4. Boot-critical images
     await tryFlashImages(device, imageEntries, onProgress, BOOT_CRITICAL_IMAGES);

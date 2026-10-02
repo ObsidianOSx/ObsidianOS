@@ -1,0 +1,11 @@
+# Everything on this site is meant to be read and indexed, with one exception.
+#
+# The releases are the operating system itself: around two gigabytes each, one per phone per
+# version, kept for good. A crawler working through all of them would move tens of gigabytes and
+# cost real money in bandwidth without helping anyone find anything, so they are left out. The
+# downloads page lists every one of them in plain HTML and is indexed normally.
+User-agent: *
+Allow: /
+Disallow: /releases/
+
+Sitemap: https://obsidianos.org/sitemap.xml

@@ -109,6 +109,13 @@ def page(index):
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Download OBSIDIAN</title>
 <meta name="description" content="Every OBSIDIAN release, with its date, size and SHA-256 checksum. Older releases are kept for good.">
+<link rel="canonical" href="https://obsidianos.org/downloads.html">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="OBSIDIAN">
+<meta property="og:url" content="https://obsidianos.org/downloads.html">
+<meta property="og:title" content="Download OBSIDIAN">
+<meta property="og:description" content="Every OBSIDIAN release, with its date, size and SHA-256 checksum. Older releases are kept for good.">
+<meta name="twitter:card" content="summary">
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="{favicon}">

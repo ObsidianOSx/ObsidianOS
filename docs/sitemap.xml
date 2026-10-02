@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://obsidianos.org/</loc><priority>1.0</priority></url>
+  <url><loc>https://obsidianos.org/about.html</loc><priority>0.9</priority></url>
+  <url><loc>https://obsidianos.org/web-install.html</loc><priority>0.9</priority></url>
+  <url><loc>https://obsidianos.org/install.html</loc><priority>0.8</priority></url>
+  <url><loc>https://obsidianos.org/devices.html</loc><priority>0.8</priority></url>
+  <url><loc>https://obsidianos.org/downloads.html</loc><priority>0.7</priority></url>
+  <url><loc>https://obsidianos.org/donate.html</loc><priority>0.5</priority></url>
+</urlset>

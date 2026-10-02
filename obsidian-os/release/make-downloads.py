@@ -115,7 +115,11 @@ def page(index):
 <meta property="og:url" content="https://obsidianos.org/downloads.html">
 <meta property="og:title" content="Download OBSIDIAN">
 <meta property="og:description" content="Every OBSIDIAN release, with its date, size and SHA-256 checksum. Older releases are kept for good.">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://obsidianos.org/share.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="The OBSIDIAN mark, a pale ellipse on black">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="{favicon}">

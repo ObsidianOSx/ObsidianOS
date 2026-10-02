@@ -19,8 +19,9 @@ applied to the operating system, and the module the chat server uses.
 
 ## Get it
 
-Test releases run on the Google Pixel 8 today, with the Pixel 9, 7 and 6 on the way. Installing one
-erases the phone.
+Test releases run on the Google Pixel 6, 7, 8, 9 and 10. The Pixel 8 is the one they are built and
+tested on; the rest are built and their install checked end to end, but nobody has run them on that
+hardware yet. Installing one erases the phone.
 
 - [Install from your browser](https://obsidianos.org/web-install.html), in Chrome, Edge or Brave on
   a computer. It finds the release for your phone, checks it and installs it.

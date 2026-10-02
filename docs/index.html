@@ -19,6 +19,17 @@
 <meta name="color-scheme" content="dark">
 <link rel="stylesheet" href="style.css">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23000'/><ellipse cx='16' cy='16' rx='8' ry='10' fill='none' stroke='%23d8d8d8' stroke-width='1.4'/></svg>">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@graph":[
+{"@type":"SoftwareApplication","name":"OBSIDIAN","applicationCategory":"OperatingSystem","operatingSystem":"Android","url":"https://obsidianos.org/","downloadUrl":"https://obsidianos.org/downloads.html","installUrl":"https://obsidianos.org/web-install.html","image":"https://obsidianos.org/share.png","codeRepository":"https://github.com/ObsidianOSx/ObsidianOS","license":"https://www.gnu.org/licenses/gpl-3.0.html","isAccessibleForFree":true,"offers":{"@type":"Offer","price":"0","priceCurrency":"USD"},"description":"A privacy-first Android for Google Pixel phones: encrypted chat over Tor, Tor Browser, a camera and an optional Monero wallet. No dialler, no SMS, no app store, location switched off at the system level, and an emergency wipe. Open source under GPL-3.0."},
+{"@type":"FAQPage","mainEntity":[
+{"@type":"Question","name":"If I lose the phone, can I get my account back?","acceptedAnswer":{"@type":"Answer","text":"No, and that is deliberate. Your keys and password exist only on your phone. If it is wiped or lost, that account ends and you register a new username, a different one, because the old name stays taken by an account nobody can sign in to any more. Nothing is held anywhere for an attacker, or us, to hand over."}},
+{"@type":"Question","name":"Can it make phone calls or send texts?","acceptedAnswer":{"@type":"Answer","text":"No. The dialler and messaging apps are removed from the operating system. Calls and SMS travel through the mobile network, where they are logged and interceptable."}},
+{"@type":"Question","name":"Why does adding someone need their username, not their number?","acceptedAnswer":{"@type":"Answer","text":"A phone number identifies you for life and links to everything else. A username on this phone links to nothing."}},
+{"@type":"Question","name":"Why should I believe any of this?","acceptedAnswer":{"@type":"Answer","text":"Because you do not have to take our word for it. Every line of OBSIDIAN is open source under the GPL-3.0 licence, so any security researcher can check exactly how it works, including the section above on what the server does and does not see. Privacy you have to take on trust is not privacy."}},
+{"@type":"Question","name":"Is it finished?","acceptedAnswer":{"@type":"Answer","text":"No. It is in early development. Current builds are test builds, which means they are signed with test keys and the phone's bootloader stays unlocked. They are for evaluation, not for protecting anyone yet."}}
+]}]}
+</script>
 </head>
 <body>
 
@@ -247,7 +258,7 @@
 
 <footer>
   <p>OBSIDIAN, open source under GPL-3.0</p>
-  <p class="fineprint">This page loads no fonts, scripts, analytics or cookies from anywhere. Nothing here counts your visit.</p>
+  <p class="fineprint">This page loads nothing from anywhere, sets no cookies and counts no visits. Its one script tag is a description of this page for search engines: data, not code, and nothing on this page runs.</p>
 </footer>
 
 </body>

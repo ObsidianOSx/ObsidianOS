@@ -197,10 +197,29 @@ footer {
   text-align: center; color: var(--muted);
 }
 footer p { margin: 0 0 6px; font-size: 14px; }
+/* Every page is long enough that someone who reads to the end is a scroll away from the menu at
+   the top. This puts it back within reach, and it is what lets the header stay short on a phone. */
+footer .footnav {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 10px 22px; margin: 0 0 22px;
+}
+footer .footnav a { color: var(--muted); text-decoration: none; font-size: 14.5px; }
+footer .footnav a:hover, footer .footnav a:focus-visible { color: var(--bright); }
 
 @media (max-width: 640px) {
-  .top { flex-direction: column; align-items: flex-start; gap: 10px; }
-  .top nav { justify-content: flex-start; gap: 16px; }
+  .top { flex-direction: column; align-items: flex-start; gap: 8px; padding-top: 11px; padding-bottom: 11px; }
+  .top nav { justify-content: flex-start; gap: 15px; row-gap: 10px; }
+  .top nav a { font-size: 14px; }
+  /* Nine links wrapped onto two rows and took a third of the first screen before any content
+     appeared. On a phone the header keeps only what someone arriving is likely to want next;
+     the rest of the menu is in the footer, on every page, which is where it belongs anyway.
+     The three section links are left out entirely because they point at parts of the home page
+     that a phone reaches by scrolling. */
+  .top nav a[href*="#phone"],
+  .top nav a[href*="#messaging"],
+  .top nav a[href*="#transparency"],
+  .top nav a[href="about.html"],
+  .top nav a[href="devices.html"],
+  .top nav a[href="donate.html"] { display: none; }
   .steps li { flex-direction: column; gap: 10px; }
 }
 

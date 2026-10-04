@@ -29,6 +29,25 @@ find /var/www/obsidian -type f -exec chmod 644 {} +
 find /var/www/obsidian -type d -exec chmod 755 {} +
 
 echo "[3/5] enabling the site"
+# The config came off a machine running nginx 1.28, where http2 is a directive of its own. Ubuntu
+# 24.04 ships 1.24, which predates that and wants the flag on the listen line instead. Same result,
+# older spelling. Done by hand the first two times this was restored, so it lives here now.
+NGINX_VER=$(nginx -v 2>&1 | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' | head -1)
+if [ -n "$NGINX_VER" ] && grep -q '^\s*http2 on;' /etc/nginx/sites-available/obsidian 2>/dev/null; then
+  # The standalone http2 directive arrived in 1.25.1. Anything older needs it on the listen line.
+  oldest=$(printf '%s\n1.25.1\n' "$NGINX_VER" | sort -V | head -1)
+  if [ "$oldest" = "$NGINX_VER" ] && [ "$NGINX_VER" != "1.25.1" ]; then
+    echo "      nginx $NGINX_VER predates the http2 directive, moving it onto the listen line"
+    sed -i 's/^\(\s*listen 443 ssl\)\(.*\);/\1\2 http2;/' /etc/nginx/sites-available/obsidian
+    sed -i '/^\s*http2 on;\s*$/d' /etc/nginx/sites-available/obsidian
+  fi
+fi
+# The release index carries the checksums and the per phone indexes the browser installer reads.
+# Without it the site serves builds that nothing can verify and the installer cannot find them.
+if [ -n "${INDEX:-}" ] && [ -f "$INDEX" ]; then
+  tar -xzf "$INDEX" -C /var/www/obsidian
+  echo "      release index restored"
+fi
 ln -sf /etc/nginx/sites-available/obsidian /etc/nginx/sites-enabled/obsidian
 rm -f /etc/nginx/sites-enabled/default
 nginx -t

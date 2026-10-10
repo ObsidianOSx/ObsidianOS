@@ -83,7 +83,9 @@ class UpdateManager(
     }
 
     fun check(socksPort: Int) {
-        if (BuildConfig.UPDATE_CERT_PEM.isBlank()) {
+        // A phone built to be updated privately (ro.obsidian.updates=private) never takes the public
+        // update: it would replace that phone's own build with the public one.
+        if (BuildConfig.UPDATE_CERT_PEM.isBlank() || SystemProperties.get("ro.obsidian.updates", "") == "private") {
             _state.value = State.NotConfigured
             return
         }

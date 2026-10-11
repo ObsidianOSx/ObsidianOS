@@ -27,7 +27,8 @@ wsl.exe -d "$DISTRO" -e true >/dev/null 2>&1 || {
   echo "WSL distribution '$DISTRO' is not there. Install it with: wsl --install -d Ubuntu"; exit 1; }
 
 # Turn a Windows path into the one Linux sees through the mount.
-tolinux() { printf '%s' "$1" | sed -e 's|\\|/|g' -e 's|^\([A-Za-z]\):|/mnt/\L\1|'; }
+# Both C:/x and Git Bash's own /c/x spelling of the same place.
+tolinux() { printf '%s' "$1" | sed -e 's|\\|/|g' -e 's|^\([A-Za-z]\):|/mnt/\L\1|' -e 's|^/\([a-z]\)/|/mnt/\1/|'; }
 
 echo "[1/4] making sure the signing tools are there"
 # python-is-python3 matters: the AOSP release tools run themselves with "python", which Ubuntu

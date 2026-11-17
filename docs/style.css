@@ -373,3 +373,4 @@ button.button.quiet:disabled:hover { background: transparent; border-color: var(
    sections and the hero put their buttons in the middle. */
 .band .cta { justify-content: flex-start; }
 .band.closing .cta { justify-content: center; }
+footer .facts { color: var(--muted); }
